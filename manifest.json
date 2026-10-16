@@ -1,0 +1,17 @@
+{
+  "name": "Báo Cáo Công Việc – Tổ Nước",
+  "short_name": "Báo Cáo Nước",
+  "description": "Ứng dụng báo cáo công việc hàng ngày Tổ Nước",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f1f5f9",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

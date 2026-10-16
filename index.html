@@ -1,0 +1,1338 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Báo Cáo Nước">
+<title>Báo Cáo Công Việc – Tổ Nước</title>
+<style>
+  :root[data-theme="light"] {
+    --bg: #f1f5f9;
+    --surface: #ffffff;
+    --surface-sub: #f8fafc;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --text-muted: #64748b;
+    --primary: #2563eb;
+    --primary-soft: rgba(37, 99, 235, 0.1);
+    --success: #059669;
+    --success-soft: rgba(5, 150, 105, 0.12);
+    --danger: #dc2626;
+    --danger-soft: rgba(220, 38, 38, 0.1);
+    --warning: #d97706;
+    --shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0b0d11;
+    --surface: #14171f;
+    --surface-sub: #1c202b;
+    --border: #282e3d;
+    --text: #f1f5f9;
+    --text-muted: #8e98a8;
+    --primary: #3b82f6;
+    --primary-soft: rgba(59, 130, 246, 0.16);
+    --success: #10b981;
+    --success-soft: rgba(16, 185, 129, 0.15);
+    --danger: #ef4444;
+    --danger-soft: rgba(239, 68, 68, 0.15);
+    --warning: #f59e0b;
+    --shadow: 0 2px 10px rgba(0, 0, 0, 0.35);
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    margin: 0;
+    padding: 14px 12px 115px 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.45;
+    transition: background 0.15s ease, color 0.15s ease;
+  }
+
+  .container {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .app-title {
+    font-size: 17px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .top-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-small {
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .btn-small:active {
+    transform: scale(0.97);
+  }
+
+  /* Card chung */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 13px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  label.field-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  input, textarea, select {
+    width: 100%;
+    background: var(--surface-sub);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    font-size: 14px;
+    outline: none;
+    font-family: inherit;
+  }
+
+  input:focus, textarea:focus {
+    border-color: var(--primary);
+  }
+
+  /* Khu vực chỉnh nhanh Ngày / Tháng / Năm */
+  .date-section {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--border);
+  }
+
+  .date-main-row {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .date-display-input {
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .date-quick-btns {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+
+  .btn-date-quick {
+    background: var(--surface-sub);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 6px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .btn-date-quick.today-highlight {
+    background: var(--primary-soft);
+    color: var(--primary);
+    border-color: var(--primary);
+  }
+
+  /* Tiêu đề mỗi mục 1..5 */
+  .sec-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .sec-title-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .sec-title-input {
+    display: none;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 6px 8px;
+    margin-bottom: 0;
+  }
+
+  /* Danh sách các dòng gạch đầu dòng */
+  .item-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .item-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 9px;
+  }
+
+  .item-bullet {
+    color: var(--primary);
+    font-weight: 700;
+    padding-top: 1px;
+    user-select: none;
+  }
+
+  .item-text {
+    flex: 1;
+    font-size: 14px;
+    word-break: break-word;
+    white-space: pre-wrap;
+    outline: none;
+  }
+
+  .item-del {
+    background: transparent;
+    border: none;
+    color: var(--danger);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 2px 6px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .add-row {
+    display: flex;
+    gap: 6px;
+  }
+
+  .add-row input {
+    flex: 1;
+    margin-bottom: 0;
+  }
+
+  .btn-add {
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0 14px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* Thẻ bấm nhanh (Quick Chips) */
+  .chips-wrap {
+    margin-top: 8px;
+  }
+
+  .chips-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+  }
+
+  .chips-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+  }
+
+  .chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .chip {
+    background: var(--primary-soft);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .chip:active {
+    opacity: 0.7;
+  }
+
+  .chip-remove {
+    color: var(--danger);
+    font-weight: 700;
+    font-size: 11px;
+    padding-left: 2px;
+  }
+
+  /* Mục 5: Bể mái & Nút tăng giảm 0.1 */
+  .tank-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .tank-row {
+    display: grid;
+    grid-template-columns: 1fr 1.35fr 1.35fr;
+    gap: 6px;
+    align-items: center;
+    background: var(--surface-sub);
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+
+  .tank-row.single-input {
+    grid-template-columns: 1fr 2fr;
+  }
+
+  .tank-name {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .tank-field {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+
+  .tank-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    white-space: nowrap;
+    min-width: 22px;
+  }
+
+  .step-group {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .step-btn {
+    background: var(--surface-sub);
+    color: var(--text);
+    border: none;
+    padding: 6px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  .step-btn:active {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+
+  .step-input {
+    width: 100%;
+    border: none !important;
+    background: transparent !important;
+    text-align: center;
+    font-weight: 700;
+    padding: 5px 2px !important;
+    font-size: 13px;
+    margin-bottom: 0 !important;
+  }
+
+  .tank-unit {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 600;
+    padding-right: 3px;
+  }
+
+  /* Danh sách báo cáo đã lưu */
+  .saved-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .saved-item {
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .saved-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .saved-date {
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .saved-meta {
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  .saved-actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  /* Khung xem trước văn bản */
+  .preview-box {
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+    font-size: 13.5px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.5;
+  }
+
+  /* Thanh ghim dưới đáy */
+  .bottom-dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 10px 12px 18px 12px;
+    z-index: 900;
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  .dock-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1.1fr 1.6fr;
+    gap: 8px;
+  }
+
+  .btn-dock {
+    border-radius: 10px;
+    padding: 13px 8px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+
+  .btn-dock:active {
+    transform: scale(0.98);
+  }
+
+  .btn-reset-day {
+    background: var(--surface-sub);
+    color: var(--text);
+  }
+
+  .btn-save-report {
+    background: var(--primary);
+    color: #fff;
+    border-color: var(--primary);
+  }
+
+  .btn-copy-all {
+    background: var(--success);
+    color: #fff;
+    border-color: var(--success);
+    font-size: 14px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 82px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--text);
+    color: var(--bg);
+    padding: 9px 16px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 999;
+    white-space: nowrap;
+  }
+
+  .toast.show {
+    opacity: 1;
+  }
+</style>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#2563eb">
+  <link rel="apple-touch-icon" href="icon.png">
+</head>
+<body>
+
+<div class="container">
+  <div class="top-bar">
+    <h1 class="app-title">Báo Cáo Hàng Ngày – Tổ Nước</h1>
+    <div class="top-actions">
+      <button class="btn-small" onclick="loadSampleReport()">Nạp mẫu</button>
+      <button class="btn-small" id="theme-btn" onclick="toggleTheme()">Giao diện: Sáng</button>
+    </div>
+  </div>
+
+  <!-- Thông tin chung & Bộ chỉnh nhanh Ngày Tháng Năm -->
+  <div class="card">
+    <div>
+      <label class="field-label">Tiêu đề báo cáo</label>
+      <input type="text" id="report-header" value="BÁO CÁO CÔNG VIỆC – TỔ NƯỚC" oninput="autoSaveDraft()">
+    </div>
+
+    <div class="date-section">
+      <label class="field-label">Ngày báo cáo (Chạm lịch hoặc bấm nút chỉnh nhanh)</label>
+      <div class="date-main-row">
+        <input type="text" class="date-display-input" id="report-date" placeholder="DD/MM/YYYY" oninput="onManualDateInput(this.value)">
+        <input type="date" id="native-date-picker" onchange="onNativeDatePicked(this.value)">
+      </div>
+      <div class="date-quick-btns">
+        <button class="btn-date-quick" onclick="shiftReportDate(-1)">-1 Ngày</button>
+        <button class="btn-date-quick today-highlight" onclick="setReportDateToday()">Hôm nay</button>
+        <button class="btn-date-quick" onclick="shiftReportDate(1)">+1 Ngày</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Danh sách các mục 1 -> 4 -->
+  <div id="sections-container"></div>
+
+  <!-- Mục 5: Theo dõi mực nước bể mái (Có nút tăng giảm 0.1) -->
+  <div class="card">
+    <div class="sec-header">
+      <span class="sec-title-text" id="sec5-title-display">5. Theo dõi mực nước bể mái</span>
+      <input type="text" class="sec-title-input" id="sec5-title-input" oninput="updateSec5Title(this.value)">
+      <button class="btn-small" onclick="toggleEditSec5Title()">Sửa tiêu đề</button>
+    </div>
+
+    <div class="tank-grid">
+      <!-- Khu Z1 -->
+      <div class="tank-row">
+        <span class="tank-name">Khu Z1</span>
+        <div class="tank-field">
+          <span class="tank-label">RO</span>
+          <div class="step-group">
+            <button class="step-btn" onclick="adjustTank('z1-ro', -0.1)">-</button>
+            <input type="text" id="z1-ro" class="step-input" placeholder="1,8" oninput="autoSaveDraft()">
+            <button class="step-btn" onclick="adjustTank('z1-ro', 0.1)">+</button>
+          </div>
+          <span class="tank-unit">m</span>
+        </div>
+        <div class="tank-field">
+          <span class="tank-label">SH</span>
+          <div class="step-group">
+            <button class="step-btn" onclick="adjustTank('z1-sh', -0.1)">-</button>
+            <input type="text" id="z1-sh" class="step-input" placeholder="1,7" oninput="autoSaveDraft()">
+            <button class="step-btn" onclick="adjustTank('z1-sh', 0.1)">+</button>
+          </div>
+          <span class="tank-unit">m</span>
+        </div>
+      </div>
+
+      <!-- Khu Z3 -->
+      <div class="tank-row">
+        <span class="tank-name">Khu Z3</span>
+        <div class="tank-field">
+          <span class="tank-label">RO</span>
+          <div class="step-group">
+            <button class="step-btn" onclick="adjustTank('z3-ro', -0.1)">-</button>
+            <input type="text" id="z3-ro" class="step-input" placeholder="1,6" oninput="autoSaveDraft()">
+            <button class="step-btn" onclick="adjustTank('z3-ro', 0.1)">+</button>
+          </div>
+          <span class="tank-unit">m</span>
+        </div>
+        <div class="tank-field">
+          <span class="tank-label">SH</span>
+          <div class="step-group">
+            <button class="step-btn" onclick="adjustTank('z3-sh', -0.1)">-</button>
+            <input type="text" id="z3-sh" class="step-input" placeholder="1,7" oninput="autoSaveDraft()">
+            <button class="step-btn" onclick="adjustTank('z3-sh', 0.1)">+</button>
+          </div>
+          <span class="tank-unit">m</span>
+        </div>
+      </div>
+
+      <!-- Khu A1 + A2 -->
+      <div class="tank-row single-input">
+        <span class="tank-name">Khu A1+A2</span>
+        <div class="tank-field" style="width:100%;">
+          <span class="tank-label">Mực nước</span>
+          <div class="step-group">
+            <button class="step-btn" onclick="adjustTank('a12-level', -0.1)">-</button>
+            <input type="text" id="a12-level" class="step-input" placeholder="2,1" oninput="autoSaveDraft()">
+            <button class="step-btn" onclick="adjustTank('a12-level', 0.1)">+</button>
+          </div>
+          <span class="tank-unit">m</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="item-list" id="sec5-extra-list"></div>
+    <div class="add-row">
+      <input type="text" id="sec5-extra-input" placeholder="Thêm ghi chú bể mái khác (nếu có)..." onkeydown="if(event.key==='Enter') addSec5Extra()">
+      <button class="btn-add" onclick="addSec5Extra()">+ Thêm</button>
+    </div>
+  </div>
+
+  <!-- Lịch sử Báo cáo đã lưu -->
+  <div class="card">
+    <div class="sec-header">
+      <span class="sec-title-text">Báo cáo đã lưu (<span id="saved-count">0</span>)</span>
+      <button class="btn-small" onclick="downloadCurrentReportTxt()">Tải file .TXT</button>
+    </div>
+    <div id="saved-reports-container" class="saved-list"></div>
+  </div>
+
+  <!-- Xem trước toàn bộ nội dung văn bản -->
+  <div class="card">
+    <div class="sec-header">
+      <span class="sec-title-text">Xem trước văn bản báo cáo</span>
+      <button class="btn-small" onclick="copyFullReport()">Copy nhanh</button>
+    </div>
+    <div class="preview-box" id="report-preview"></div>
+  </div>
+</div>
+
+<!-- Thanh nút cố định dưới cùng -->
+<div class="bottom-dock">
+  <div class="dock-inner">
+    <button class="btn-dock btn-reset-day" onclick="startNewDay()">Ngày mới</button>
+    <button class="btn-dock btn-save-report" onclick="saveReportExplicit()">Lưu báo cáo</button>
+    <button class="btn-dock btn-copy-all" onclick="copyFullReport()">Copy Toàn Bộ</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Đã lưu báo cáo</div>
+
+<script>
+const STORAGE_KEY = "TO_NUOC_DAILY_REPORT_V3";
+const SAVED_HISTORY_KEY = "TO_NUOC_SAVED_HISTORY_V3";
+const THEME_KEY = "TO_NUOC_THEME_V3";
+
+const DEFAULT_SECTIONS = [
+  {
+    id: "sec1",
+    title: "1. Công tác kiểm tra – sửa chữa tại khoa phòng:",
+    items: [
+      "Kiểm tra, thay thế thoát chậu rửa tay + nút nhấn tiểu nam WC hội trường T12",
+      "Xử lý lỗi phao tín hiệu bơm TNT 3 GĐ 1",
+      "Kiểm tra, xử lý mất nước máy lọc nước phòng kế toán T4",
+      "Kiểm tra các vị trí bị mất nắp thoát sàn khoa Đột quỵ",
+      "Phối hợp cùng nhà thầu kiểm tra, bơm bỏ nước thải bể phốt tòa nhà 3 tầng Truyền nhiễm"
+    ],
+    presets: [
+      "Kiểm tra, xử lý mất nước máy lọc nước",
+      "Kiểm tra, thay thế vòi / thoát chậu rửa tay",
+      "Xử lý tắc bồn cầu / thoát sàn tại khoa",
+      "Kiểm tra phao tín hiệu bể nước"
+    ]
+  },
+  {
+    id: "sec2",
+    title: "2. Công tác vận hành – kỹ thuật trạm xử lý nước thải:",
+    items: [
+      "Kiểm tra hóa chất các bồn chứa, pha bổ sung hóa chất vào các bồn chứa",
+      "Vệ sinh các thiết bị đo trong tủ quan trắc môi trường",
+      "Theo dõi vận hành trạm XLNT",
+      "Rửa ngược màng lọc MBR bằng hóa chất",
+      "Xử lý vỡ đường ống bơm hóa chất dinh dưỡng (đã xử lý xong)",
+      "Xử lý kẹt phao điện bể màng MBR - 1&2",
+      "Kiểm tra và pha bổ sung hóa chất vào các bồn chứa cuối ngày"
+    ],
+    presets: [
+      "Kiểm tra hóa chất các bồn chứa, pha bổ sung hóa chất vào các bồn chứa",
+      "Vệ sinh các thiết bị đo trong tủ quan trắc môi trường",
+      "Theo dõi vận hành trạm XLNT",
+      "Rửa ngược màng lọc MBR bằng hóa chất",
+      "Kiểm tra và pha bổ sung hóa chất vào các bồn chứa cuối ngày"
+    ]
+  },
+  {
+    id: "sec3",
+    title: "3. Sự cố còn tồn tại:",
+    items: [
+      "Bể tách mỡ đang bị lỗi + tắc đường ống dẫn xuống bể",
+      "Van 1 chiều máy thổi khí bị hỏng 3 van chưa có van thay thế",
+      "Hai đường ống bơm bể điều hòa có dấu hiệu bị nén áp dẫn đến cong đường ống phía bên dưới đầu đẩy bơm (đề nghị được xem xét sửa chữa khắc phục)",
+      "Thang dẫn hướng của máy bơm đã bị bung ra và không sử dụng cho mục đích kéo bơm lên được (đề nghị xin được xử lý khắc phục sớm)"
+    ],
+    presets: [
+      "Bể tách mỡ đang bị lỗi + tắc đường ống dẫn xuống bể",
+      "Van 1 chiều máy thổi khí bị hỏng 3 van chưa có van thay thế",
+      "Hai đường ống bơm bể điều hòa có dấu hiệu bị nén áp dẫn đến cong đường ống phía bên dưới đầu đẩy bơm (đề nghị được xem xét sửa chữa khắc phục)",
+      "Thang dẫn hướng của máy bơm đã bị bung ra và không sử dụng cho mục đích kéo bơm lên được (đề nghị xin được xử lý khắc phục sớm)"
+    ]
+  },
+  {
+    id: "sec4",
+    title: "4. Công tác theo dõi hệ thống:",
+    items: [
+      "Bể tách mỡ: Tiếp tục theo dõi tình trạng hoạt động sau xử lý của nhà thầu.",
+      "Phòng bơm RO Zone 1 + 3 – GĐ2: Hệ thống hoạt động bình thường."
+    ],
+    presets: [
+      "Bể tách mỡ: Tiếp tục theo dõi tình trạng hoạt động sau xử lý của nhà thầu.",
+      "Phòng bơm RO Zone 1 + 3 – GĐ2: Hệ thống hoạt động bình thường.",
+      "Hệ thống cấp nước sinh hoạt các tòa nhà hoạt động ổn định."
+    ]
+  }
+];
+
+let state = {
+  header: "BÁO CÁO CÔNG VIỆC – TỔ NƯỚC",
+  date: "",
+  sections: [],
+  sec5Title: "5. Theo dõi mực nước bể mái",
+  tanks: {
+    z1_ro: "1,8",
+    z1_sh: "1,7",
+    z3_ro: "1,6",
+    z3_sh: "1,7",
+    a12: "2,1"
+  },
+  sec5Extra: []
+};
+
+let savedHistory = [];
+let editingPresetMode = {};
+
+/* Hàm tăng giảm 0.1 cho các ô mực nước (hỗ trợ dấu phẩy hoặc chấm thập phân) */
+function adjustTank(inputId, delta) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  let valStr = input.value.trim().replace(",", ".");
+  let num = parseFloat(valStr);
+  if (isNaN(num)) {
+    num = delta > 0 ? 1.0 : 0.0;
+  } else {
+    num = Math.round((num + delta) * 10) / 10;
+    if (num < 0) num = 0;
+  }
+  // Chuyển lại về định dạng dấu phẩy tiếng Việt cho chuẩn mẫu
+  input.value = num.toFixed(1).replace(".", ",");
+  autoSaveDraft();
+}
+
+/* Xử lý Ngày / Tháng / Năm */
+function formatDateToVN(dateObj) {
+  const dd = String(dateObj.getDate()).padStart(2, "0");
+  const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const yyyy = dateObj.getFullYear();
+  return `${dd}/${mm}/${yyyy}`;
+}
+
+function formatDateToISO(dateObj) {
+  const dd = String(dateObj.getDate()).padStart(2, "0");
+  const mm = String(dateObj.getMonth() + 1).padStart(2, "0");
+  const yyyy = dateObj.getFullYear();
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+function parseVNDateString(vnStr) {
+  const m = String(vnStr || "").trim().match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
+  if (!m) return new Date();
+  const d = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  return isNaN(d.getTime()) ? new Date() : d;
+}
+
+function todayStr() {
+  return formatDateToVN(new Date());
+}
+
+function syncNativeDatePickerFromVN(vnStr) {
+  const d = parseVNDateString(vnStr);
+  const picker = document.getElementById("native-date-picker");
+  if (picker) picker.value = formatDateToISO(d);
+}
+
+function onNativeDatePicked(isoVal) {
+  if (!isoVal) return;
+  const parts = isoVal.split("-");
+  if (parts.length === 3) {
+    const vnDate = `${parts[2]}/${parts[1]}/${parts[0]}`;
+    document.getElementById("report-date").value = vnDate;
+    autoSaveDraft();
+    showToast(`Đã chọn ngày ${vnDate}`);
+  }
+}
+
+function onManualDateInput(val) {
+  syncNativeDatePickerFromVN(val);
+  autoSaveDraft();
+}
+
+function setReportDateToday() {
+  const t = todayStr();
+  document.getElementById("report-date").value = t;
+  syncNativeDatePickerFromVN(t);
+  autoSaveDraft();
+  showToast(`Đã đặt ngày hôm nay (${t})`);
+}
+
+function shiftReportDate(daysDelta) {
+  const currentVN = document.getElementById("report-date").value;
+  const d = parseVNDateString(currentVN);
+  d.setDate(d.getDate() + daysDelta);
+  const newVN = formatDateToVN(d);
+  document.getElementById("report-date").value = newVN;
+  syncNativeDatePickerFromVN(newVN);
+  autoSaveDraft();
+  showToast(`Đã chuyển sang ngày ${newVN}`);
+}
+
+/* Giao diện Sáng / Tối (Mặc định: Sáng) */
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY) || "light";
+  applyTheme(saved);
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem(THEME_KEY, theme);
+  const btn = document.getElementById("theme-btn");
+  if (btn) btn.textContent = theme === "light" ? "Giao diện: Sáng" : "Giao diện: Tối";
+}
+
+function toggleTheme() {
+  const cur = document.documentElement.getAttribute("data-theme") || "light";
+  applyTheme(cur === "light" ? "dark" : "light");
+}
+
+function showToast(msg) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), 2000);
+}
+
+/* Khởi tạo & Lưu trữ */
+function loadState() {
+  initTheme();
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (raw) {
+    try {
+      state = JSON.parse(raw);
+    } catch (_) {
+      resetToSample();
+    }
+  } else {
+    resetToSample();
+  }
+
+  const rawHistory = localStorage.getItem(SAVED_HISTORY_KEY);
+  if (rawHistory) {
+    try {
+      savedHistory = JSON.parse(rawHistory);
+    } catch (_) {
+      savedHistory = [];
+    }
+  }
+
+  syncInputsFromState();
+  renderSections();
+  renderSec5Extra();
+  renderSavedHistory();
+  updatePreview();
+}
+
+function resetToSample() {
+  state = {
+    header: "BÁO CÁO CÔNG VIỆC – TỔ NƯỚC",
+    date: todayStr(),
+    sections: JSON.parse(JSON.stringify(DEFAULT_SECTIONS)),
+    sec5Title: "5. Theo dõi mực nước bể mái",
+    tanks: {
+      z1_ro: "1,8",
+      z1_sh: "1,7",
+      z3_ro: "1,6",
+      z3_sh: "1,7",
+      a12: "2,1"
+    },
+    sec5Extra: []
+  };
+}
+
+function syncInputsFromState() {
+  document.getElementById("report-header").value = state.header || "BÁO CÁO CÔNG VIỆC – TỔ NƯỚC";
+  const dStr = state.date || todayStr();
+  document.getElementById("report-date").value = dStr;
+  syncNativeDatePickerFromVN(dStr);
+
+  document.getElementById("sec5-title-display").textContent = state.sec5Title || "5. Theo dõi mực nước bể mái";
+  document.getElementById("sec5-title-input").value = state.sec5Title || "5. Theo dõi mực nước bể mái";
+
+  document.getElementById("z1-ro").value = state.tanks?.z1_ro ?? "";
+  document.getElementById("z1-sh").value = state.tanks?.z1_sh ?? "";
+  document.getElementById("z3-ro").value = state.tanks?.z3_ro ?? "";
+  document.getElementById("z3-sh").value = state.tanks?.z3_sh ?? "";
+  document.getElementById("a12-level").value = state.tanks?.a12 ?? "";
+}
+
+function autoSaveDraft() {
+  state.header = document.getElementById("report-header").value.trim();
+  state.date = document.getElementById("report-date").value.trim();
+  state.tanks = {
+    z1_ro: document.getElementById("z1-ro").value.trim(),
+    z1_sh: document.getElementById("z1-sh").value.trim(),
+    z3_ro: document.getElementById("z3-ro").value.trim(),
+    z3_sh: document.getElementById("z3-sh").value.trim(),
+    a12: document.getElementById("a12-level").value.trim()
+  };
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  updatePreview();
+}
+
+function saveReportExplicit() {
+  autoSaveDraft();
+  const reportDate = state.date || todayStr();
+  const snapshot = JSON.parse(JSON.stringify(state));
+  const savedAt = new Date().toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" });
+
+  const existingIdx = savedHistory.findIndex(item => item.date === reportDate);
+  const record = {
+    id: Date.now(),
+    date: reportDate,
+    savedAt: `Lưu lúc ${savedAt}`,
+    text: buildReportText(),
+    snapshot: snapshot
+  };
+
+  if (existingIdx >= 0) {
+    savedHistory[existingIdx] = record;
+  } else {
+    savedHistory.unshift(record);
+  }
+
+  localStorage.setItem(SAVED_HISTORY_KEY, JSON.stringify(savedHistory));
+  renderSavedHistory();
+  showToast(`Đã lưu báo cáo ngày ${reportDate}`);
+}
+
+function renderSavedHistory() {
+  const container = document.getElementById("saved-reports-container");
+  document.getElementById("saved-count").textContent = savedHistory.length;
+
+  if (savedHistory.length === 0) {
+    container.innerHTML = `<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:10px;">Chưa có bản lưu nào. Bấm nút "Lưu báo cáo" ở dưới đáy để lưu lại theo ngày.</div>`;
+    return;
+  }
+
+  container.innerHTML = savedHistory.map((item, idx) => `
+    <div class="saved-item">
+      <div class="saved-info">
+        <span class="saved-date">Ngày: ${escapeHtml(item.date)}</span>
+        <span class="saved-meta">${escapeHtml(item.savedAt)}</span>
+      </div>
+      <div class="saved-actions">
+        <button class="btn-small" onclick="loadSavedReport(${idx})">Mở lại</button>
+        <button class="btn-small" onclick="copySavedReport(${idx})">Copy</button>
+        <button class="btn-small" style="color:var(--danger)" onclick="deleteSavedReport(${idx})">Xóa</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function loadSavedReport(idx) {
+  const item = savedHistory[idx];
+  if (!item || !item.snapshot) return;
+  state = JSON.parse(JSON.stringify(item.snapshot));
+  syncInputsFromState();
+  autoSaveDraft();
+  renderSections();
+  renderSec5Extra();
+  showToast(`Đã mở lại báo cáo ngày ${item.date}`);
+}
+
+async function copySavedReport(idx) {
+  const item = savedHistory[idx];
+  if (!item) return;
+  await copyTextToClipboard(item.text);
+  showToast(`Đã sao chép báo cáo ngày ${item.date}`);
+}
+
+function deleteSavedReport(idx) {
+  if (!confirm(`Xóa bản lưu báo cáo ngày ${savedHistory[idx].date}?`)) return;
+  savedHistory.splice(idx, 1);
+  localStorage.setItem(SAVED_HISTORY_KEY, JSON.stringify(savedHistory));
+  renderSavedHistory();
+  showToast("Đã xóa bản lưu");
+}
+
+function downloadCurrentReportTxt() {
+  saveReportExplicit();
+  const content = buildReportText();
+  const safeDate = (state.date || todayStr()).replace(/[^0-9a-zA-Z_-]/g, "-");
+  const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `BaoCao_ToNuoc_${safeDate}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* Render các mục 1 -> 4 */
+function renderSections() {
+  const container = document.getElementById("sections-container");
+  container.innerHTML = state.sections.map((sec, sIdx) => {
+    const isEditingPresets = !!editingPresetMode[sec.id];
+    const itemsHtml = sec.items.map((item, iIdx) => `
+      <div class="item-row">
+        <span class="item-bullet">-</span>
+        <div class="item-text" contenteditable="true" onblur="editItemText(${sIdx}, ${iIdx}, this.innerText)">${escapeHtml(item)}</div>
+        <button class="item-del" onclick="removeItem(${sIdx}, ${iIdx})">Xóa</button>
+      </div>
+    `).join("");
+
+    const chipsHtml = (sec.presets || []).map((preset, pIdx) => `
+      <span class="chip" onclick="handleChipClick(${sIdx}, ${pIdx})">
+        <span>+ ${escapeHtml(preset)}</span>
+        ${isEditingPresets ? `<span class="chip-remove" onclick="event.stopPropagation(); removePreset(${sIdx},${pIdx})">✕</span>` : ""}
+      </span>
+    `).join("");
+
+    return `
+      <div class="card">
+        <div class="sec-header">
+          <span class="sec-title-text" id="title-disp-${sIdx}">${escapeHtml(sec.title)}</span>
+          <input type="text" class="sec-title-input" id="title-inp-${sIdx}" value="${escapeHtml(sec.title)}" oninput="updateSectionTitle(${sIdx}, this.value)">
+          <button class="btn-small" onclick="toggleEditSectionTitle(${sIdx})">Sửa mục</button>
+        </div>
+
+        <div class="item-list">${itemsHtml}</div>
+
+        <div class="add-row">
+          <input type="text" id="add-inp-${sIdx}" placeholder="Nhập công việc mới vào mục ${sIdx + 1}..." onkeydown="if(event.key==='Enter') addItem(${sIdx})">
+          <button class="btn-add" onclick="addItem(${sIdx})">+ Thêm</button>
+        </div>
+
+        <div class="chips-wrap">
+          <div class="chips-header">
+            <span class="chips-label">Chạm để chèn nhanh việc thường làm:</span>
+            <button class="btn-small" style="padding:3px 7px;font-size:11px;" onclick="togglePresetManage(${sIdx})">
+              ${isEditingPresets ? "Xong" : "Sửa mẫu"}
+            </button>
+          </div>
+          <div class="chips-list">${chipsHtml}</div>
+          ${isEditingPresets ? `
+            <div class="add-row" style="margin-top:6px;">
+              <input type="text" id="preset-inp-${sIdx}" placeholder="Thêm câu mẫu lặp lại hàng ngày..." onkeydown="if(event.key==='Enter') addPreset(${sIdx})">
+              <button class="btn-add" onclick="addPreset(${sIdx})">Lưu mẫu</button>
+            </div>
+          ` : ""}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function toggleEditSectionTitle(sIdx) {
+  const disp = document.getElementById(`title-disp-${sIdx}`);
+  const inp = document.getElementById(`title-inp-${sIdx}`);
+  const isHidden = inp.style.display === "none" || !inp.style.display;
+  inp.style.display = isHidden ? "block" : "none";
+  disp.style.display = isHidden ? "none" : "block";
+  if (isHidden) inp.focus();
+}
+
+function updateSectionTitle(sIdx, val) {
+  state.sections[sIdx].title = val;
+  document.getElementById(`title-disp-${sIdx}`).textContent = val;
+  autoSaveDraft();
+}
+
+function addItem(sIdx) {
+  const inp = document.getElementById(`add-inp-${sIdx}`);
+  const val = inp.value.trim().replace(/^-\s*/, "");
+  if (!val) return;
+  state.sections[sIdx].items.push(val);
+  inp.value = "";
+  autoSaveDraft();
+  renderSections();
+}
+
+function editItemText(sIdx, iIdx, newText) {
+  const cleaned = newText.trim().replace(/^-\s*/, "");
+  if (!cleaned) {
+    state.sections[sIdx].items.splice(iIdx, 1);
+  } else {
+    state.sections[sIdx].items[iIdx] = cleaned;
+  }
+  autoSaveDraft();
+  renderSections();
+}
+
+function removeItem(sIdx, iIdx) {
+  state.sections[sIdx].items.splice(iIdx, 1);
+  autoSaveDraft();
+  renderSections();
+}
+
+function handleChipClick(sIdx, pIdx) {
+  const text = state.sections[sIdx].presets[pIdx];
+  if (!state.sections[sIdx].items.includes(text)) {
+    state.sections[sIdx].items.push(text);
+    autoSaveDraft();
+    renderSections();
+    showToast("Đã thêm vào danh sách");
+  } else {
+    showToast("Nội dung này đã có trong mục");
+  }
+}
+
+function togglePresetManage(sIdx) {
+  const secId = state.sections[sIdx].id;
+  editingPresetMode[secId] = !editingPresetMode[secId];
+  renderSections();
+}
+
+function addPreset(sIdx) {
+  const inp = document.getElementById(`preset-inp-${sIdx}`);
+  const val = inp.value.trim().replace(/^-\s*/, "");
+  if (!val) return;
+  state.sections[sIdx].presets.push(val);
+  inp.value = "";
+  autoSaveDraft();
+  renderSections();
+}
+
+function removePreset(sIdx, pIdx) {
+  state.sections[sIdx].presets.splice(pIdx, 1);
+  autoSaveDraft();
+  renderSections();
+}
+
+/* Mục 5 */
+function toggleEditSec5Title() {
+  const disp = document.getElementById("sec5-title-display");
+  const inp = document.getElementById("sec5-title-input");
+  const isHidden = inp.style.display === "none" || !inp.style.display;
+  inp.style.display = isHidden ? "block" : "none";
+  disp.style.display = isHidden ? "none" : "block";
+  if (isHidden) inp.focus();
+}
+
+function updateSec5Title(val) {
+  state.sec5Title = val;
+  document.getElementById("sec5-title-display").textContent = val;
+  autoSaveDraft();
+}
+
+function renderSec5Extra() {
+  const list = document.getElementById("sec5-extra-list");
+  list.innerHTML = (state.sec5Extra || []).map((item, idx) => `
+    <div class="item-row">
+      <span class="item-bullet">-</span>
+      <div class="item-text" contenteditable="true" onblur="editSec5Extra(${idx}, this.innerText)">${escapeHtml(item)}</div>
+      <button class="item-del" onclick="removeSec5Extra(${idx})">Xóa</button>
+    </div>
+  `).join("");
+}
+
+function addSec5Extra() {
+  const inp = document.getElementById("sec5-extra-input");
+  const val = inp.value.trim().replace(/^-\s*/, "");
+  if (!val) return;
+  state.sec5Extra.push(val);
+  inp.value = "";
+  autoSaveDraft();
+  renderSec5Extra();
+}
+
+function editSec5Extra(idx, val) {
+  const clean = val.trim().replace(/^-\s*/, "");
+  if (!clean) state.sec5Extra.splice(idx, 1);
+  else state.sec5Extra[idx] = clean;
+  autoSaveDraft();
+  renderSec5Extra();
+}
+
+function removeSec5Extra(idx) {
+  state.sec5Extra.splice(idx, 1);
+  autoSaveDraft();
+  renderSec5Extra();
+}
+
+/* Tạo chuỗi Báo cáo hoàn chỉnh */
+function buildReportText() {
+  const lines = [];
+  lines.push(state.header || "BÁO CÁO CÔNG VIỆC – TỔ NƯỚC");
+  lines.push("");
+  lines.push(`Ngày: ${state.date || todayStr()}`);
+  lines.push("");
+
+  for (const sec of state.sections) {
+    lines.push(sec.title);
+    if (sec.items.length === 0) {
+      lines.push("- Không phát sinh.");
+    } else {
+      for (const item of sec.items) {
+        lines.push(`- ${item}`);
+      }
+    }
+    lines.push("");
+  }
+
+  lines.push(state.sec5Title || "5. Theo dõi mực nước bể mái");
+  const t = state.tanks || {};
+  if (t.z1_ro || t.z1_sh) {
+    lines.push(`- Khu Z1: RO ${t.z1_ro || "..."} m – SH ${t.z1_sh || "..."} m`);
+  }
+  if (t.z3_ro || t.z3_sh) {
+    lines.push(`- Khu Z3: RO ${t.z3_ro || "..."} m – SH ${t.z3_sh || "..."} m`);
+  }
+  if (t.a12) {
+    lines.push(`- Khu A1 + A2: ${t.a12} m`);
+  }
+  for (const ex of state.sec5Extra || []) {
+    lines.push(`- ${ex}`);
+  }
+
+  return lines.join("\n").trim();
+}
+
+function updatePreview() {
+  document.getElementById("report-preview").textContent = buildReportText();
+}
+
+async function copyTextToClipboard(text) {
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return;
+    } catch (_) {}
+  }
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  document.execCommand("copy");
+  document.body.removeChild(ta);
+}
+
+async function copyFullReport() {
+  autoSaveDraft();
+  const text = buildReportText();
+  await copyTextToClipboard(text);
+  showToast("Đã sao chép toàn bộ báo cáo");
+}
+
+function startNewDay() {
+  if (!confirm("Bắt đầu báo cáo ngày mới?\n- Tự động đặt ngày hôm nay\n- Làm trống Mục 1 (sửa chữa phát sinh)\n- Giữ lại các mục cố định (Mục 2, 3, 4) để chỉnh sửa nhanh.")) {
+    return;
+  }
+  state.date = todayStr();
+  if (state.sections[0]) {
+    state.sections[0].items = [];
+  }
+  syncInputsFromState();
+  autoSaveDraft();
+  renderSections();
+  showToast("Đã tạo form cho ngày mới");
+}
+
+function loadSampleReport() {
+  if (!confirm("Khôi phục lại toàn bộ nội dung mẫu như ví dụ ban đầu?")) return;
+  resetToSample();
+  syncInputsFromState();
+  autoSaveDraft();
+  renderSections();
+  renderSec5Extra();
+  showToast("Đã nạp lại báo cáo mẫu");
+}
+
+loadState();
+</script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./service-worker.js")
+      .then(reg => console.log("Service Worker registered!", reg))
+      .catch(err => console.log("Service Worker registration failed:", err));
+  });
+}
+</script>
+</body>
+</html>
