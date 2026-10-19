@@ -95,13 +95,6 @@
     transform: translateX(-78px);
   }
 
-  /* Trên máy cảm ứng: ẩn nút Xóa nhỏ vì đã có vuốt */
-  @media (hover: none) {
-    .item-del {
-      display: none;
-    }
-  }
-
   .sec-header-btns {
     display: flex;
     gap: 6px;
@@ -331,15 +324,17 @@
     outline: none;
   }
 
-  .item-del {
+  .item-clear {
     background: transparent;
-    border: none;
-    color: var(--danger);
-    font-size: 12px;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 11px;
     font-weight: 700;
-    padding: 8px 10px;
+    padding: 5px 7px;
     cursor: pointer;
     border-radius: 6px;
+    white-space: nowrap;
+    flex-shrink: 0;
   }
 
   .add-row {
@@ -430,7 +425,7 @@
 
   .tank-row {
     display: grid;
-    grid-template-columns: 1fr 1.35fr 1.35fr;
+    grid-template-columns: 0.8fr 1.45fr 1.45fr;
     gap: 6px;
     align-items: center;
     background: var(--surface-sub);
@@ -452,6 +447,7 @@
     display: flex;
     align-items: center;
     gap: 3px;
+    min-width: 0;
   }
 
   .tank-label {
@@ -466,6 +462,7 @@
     display: flex;
     align-items: center;
     flex: 1;
+    min-width: 0;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 6px;
@@ -476,8 +473,8 @@
     background: var(--surface-sub);
     color: var(--text);
     border: none;
-    padding: 8px 11px;
-    font-size: 14px;
+    padding: 7px 8px;
+    font-size: 13px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -489,6 +486,7 @@
 
   .step-input {
     width: 100%;
+    min-width: 0;
     border: none !important;
     background: transparent !important;
     text-align: center;
@@ -641,6 +639,14 @@
     transform: translateX(-50%) translateY(0);
   }
 
+  .ver-tag {
+    text-align: center;
+    font-size: 10px;
+    color: var(--text-muted);
+    margin: 2px 0 10px;
+    user-select: none;
+  }
+
   .toast-btn {
     background: rgba(255, 255, 255, 0.16);
     color: inherit;
@@ -787,6 +793,8 @@
     </div>
     <div class="preview-box" id="report-preview"></div>
   </div>
+
+  <div class="ver-tag">Cập nhật 19/10 17:35</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
@@ -1228,11 +1236,11 @@ function renderSections() {
     const isEditingPresets = !!editingPresetMode[sec.id];
     const itemsHtml = sec.items.map((item, iIdx) => `
       <div class="swipe-wrap">
-        <button class="swipe-del" onclick="clearItemContent(${sIdx}, ${iIdx})">Xóa</button>
+        <button class="swipe-del" onclick="deleteItemWithUndo(${sIdx}, ${iIdx})">Xóa dòng</button>
         <div class="item-row" data-sidx="${sIdx}" data-iidx="${iIdx}">
           <span class="item-bullet">-</span>
           <div class="item-text" contenteditable="true" onblur="editItemText(${sIdx}, ${iIdx}, this.innerText)">${escapeHtml(item)}</div>
-          <button class="item-del" onclick="deleteItemWithUndo(${sIdx}, ${iIdx})">Xóa</button>
+          <button class="item-clear" onclick="clearItemContent(${sIdx}, ${iIdx})">Xóa ND</button>
         </div>
       </div>
     `).join("");
@@ -1464,11 +1472,11 @@ function renderSec5Extra() {
   const list = document.getElementById("sec5-extra-list");
   list.innerHTML = (state.sec5Extra || []).map((item, idx) => `
     <div class="swipe-wrap">
-      <button class="swipe-del" onclick="clearSec5ExtraContent(${idx})">Xóa</button>
+      <button class="swipe-del" onclick="deleteSec5ExtraWithUndo(${idx})">Xóa dòng</button>
       <div class="item-row" data-eidx="${idx}">
         <span class="item-bullet">-</span>
         <div class="item-text" contenteditable="true" onblur="editSec5Extra(${idx}, this.innerText)">${escapeHtml(item)}</div>
-        <button class="item-del" onclick="deleteSec5ExtraWithUndo(${idx})">Xóa</button>
+        <button class="item-clear" onclick="clearSec5ExtraContent(${idx})">Xóa ND</button>
       </div>
     </div>
   `).join("");
@@ -1636,6 +1644,7 @@ function findSwipeRow(el) {
 
 document.addEventListener("touchstart", (e) => {
   const onDelBtn = e.target.closest ? e.target.closest(".swipe-del") : null;
+  const onRowBtn = e.target.closest ? e.target.closest(".item-clear") : null;
   let row = findSwipeRow(e.target);
   if (onDelBtn && !row) {
     /* Bấm nút Xóa đỏ: nút nằm sau hàng (không phải con của .item-row)
@@ -1651,7 +1660,7 @@ document.addEventListener("touchstart", (e) => {
     }
   });
 
-  if (row && row.classList.contains("swiped") && !onDelBtn) {
+  if (row && row.classList.contains("swiped") && !onDelBtn && !onRowBtn) {
     row.classList.remove("swiped");
     row.style.transform = "";
     swallowNextClick = true;
@@ -1659,7 +1668,7 @@ document.addEventListener("touchstart", (e) => {
     return;
   }
 
-  if (!row || row.classList.contains("swiped") || onDelBtn) {
+  if (!row || row.classList.contains("swiped") || onDelBtn || onRowBtn) {
     swipeTrack = null;
     return;
   }
@@ -1703,11 +1712,22 @@ document.addEventListener("touchmove", (e) => {
   }
 }, { passive: false });
 
-document.addEventListener("touchend", () => {
+document.addEventListener("touchend", (e) => {
   if (!swipeTrack) return;
-  const { row, dx, active } = swipeTrack;
+  const { row, startX, startY, dx: trackedDx } = swipeTrack;
   swipeTrack = null;
-  if (active && dx <= -SWIPE_FULL) {
+
+  /* Tính độ vuốt từ điểm chạm cuối — đáng tin cậy trên iOS kể cả khi
+     touchmove không kịp chạy (vuốt nhanh/flick) */
+  let dx = trackedDx, dy = 0;
+  const t = e.changedTouches && e.changedTouches[0];
+  if (t) {
+    dx = t.clientX - startX;
+    dy = t.clientY - startY;
+  }
+  const horizontal = Math.abs(dx) > Math.abs(dy);
+
+  if (horizontal && dx <= -SWIPE_FULL) {
     /* Vuốt xa: xóa hẳn dòng (có nút Hoàn tác) */
     const ds = row.dataset || {};
     const isSec5 = ds.eidx !== undefined && ds.eidx !== "";
@@ -1724,7 +1744,7 @@ document.addEventListener("touchend", () => {
   }
   row.style.transition = "";
   row.style.transform = "";
-  if (active && dx <= -SWIPE_SNAP) {
+  if (horizontal && dx <= -SWIPE_SNAP) {
     row.classList.add("swiped");
   } else {
     row.classList.remove("swiped");
