@@ -574,7 +574,7 @@
     max-width: 680px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1.1fr 1.6fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 8px;
   }
 
@@ -592,7 +592,7 @@
     transform: scale(0.98);
   }
 
-  .btn-reset-day {
+  .btn-share {
     background: var(--surface-sub);
     color: var(--text);
   }
@@ -794,7 +794,7 @@
     <div class="preview-box" id="report-preview"></div>
   </div>
 
-  <div class="ver-tag">Cập nhật 19/10 17:35</div>
+  <div class="ver-tag">Cập nhật 19/10 19:15</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
@@ -803,7 +803,7 @@
 <!-- Thanh nút cố định dưới cùng -->
 <div class="bottom-dock">
   <div class="dock-inner">
-    <button class="btn-dock btn-reset-day" onclick="startNewDay()">Ngày mới</button>
+    <button class="btn-dock btn-share" onclick="shareReport()">Chia sẻ</button>
     <button class="btn-dock btn-save-report" onclick="saveReportExplicit()">Lưu báo cáo</button>
     <button class="btn-dock btn-copy-all" onclick="copyFullReport()">Copy Toàn Bộ</button>
   </div>
@@ -1605,6 +1605,22 @@ async function copyFullReport() {
   const text = buildReportText();
   await copyTextToClipboard(text);
   showToast("Đã sao chép toàn bộ báo cáo");
+}
+
+async function shareReport() {
+  blurActiveInput();
+  autoSaveDraft();
+  const text = buildReportText();
+  await copyTextToClipboard(text);
+  if (navigator.share) {
+    try {
+      await navigator.share({ text: text });
+    } catch (_) {
+      /* người dùng đóng bảng share — bỏ qua */
+    }
+  } else {
+    showToast("Đã sao chép toàn bộ báo cáo");
+  }
 }
 
 function startNewDay() {
