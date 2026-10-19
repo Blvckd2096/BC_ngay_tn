@@ -47,9 +47,70 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  /* Hiệu ứng nhấn chung cho mọi nút: thu nhỏ + tối nhẹ lúc chạm, nhả ra mượt */
+  button {
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.13s cubic-bezier(0.2, 0.7, 0.3, 1.1),
+                filter 0.13s ease,
+                background-color 0.15s ease,
+                opacity 0.13s ease,
+                box-shadow 0.2s ease;
+  }
+
+  button:active {
+    transform: scale(0.93);
+    filter: brightness(0.94);
+  }
+
+  /* Vuốt trái để xóa dòng */
+  .swipe-wrap {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    background: var(--danger);
+  }
+
+  .swipe-del {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 78px;
+    background: var(--danger);
+    color: #fff;
+    border: none;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .swipe-wrap > .item-row {
+    position: relative;
+    touch-action: pan-y;
+    transition: transform 0.22s ease;
+  }
+
+  .swipe-wrap > .item-row.swiped {
+    transform: translateX(-78px);
+  }
+
+  /* Trên máy cảm ứng: ẩn nút Xóa nhỏ vì đã có vuốt */
+  @media (hover: none) {
+    .item-del {
+      display: none;
+    }
+  }
+
+  .sec-header-btns {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
   body {
     margin: 0;
-    padding: 14px 12px 115px 12px;
+    padding: 14px 12px calc(115px + env(safe-area-inset-bottom)) 12px;
     font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
     background: var(--bg);
     color: var(--text);
@@ -98,6 +159,36 @@
     transform: scale(0.97);
   }
 
+  /* Nút avatar tròn ghim nổi ở góc trên-phải màn hình (điểm gắn chức năng sau này) */
+  .avatar-btn {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top));
+    right: 12px;
+    z-index: 940;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    padding: 0;
+    border: 2px solid var(--border);
+    overflow: hidden;
+    flex-shrink: 0;
+    background: var(--surface-sub);
+    box-shadow: var(--shadow);
+  }
+
+  /* Chừa chỗ để nút trong top-bar không chui xuống dưới avatar */
+  .top-bar {
+    padding-right: 56px;
+  }
+
+  .avatar-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    pointer-events: none;
+  }
+
   /* Card chung */
   .card {
     background: var(--surface);
@@ -131,6 +222,13 @@
 
   input:focus, textarea:focus {
     border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--primary-soft);
+  }
+
+  /* Chuyển sáng/tối mượt trên các bề mặt chính */
+  .card, .item-row, .tank-row, .saved-item, .bottom-dock, .preview-box,
+  input, textarea, .step-group {
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
   }
 
   /* Khu vực chỉnh nhanh Ngày / Tháng / Năm */
@@ -239,9 +337,9 @@
     color: var(--danger);
     font-size: 12px;
     font-weight: 700;
-    padding: 2px 6px;
+    padding: 8px 10px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 6px;
   }
 
   .add-row {
@@ -264,6 +362,7 @@
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
   }
 
   /* Thẻ bấm nhanh (Quick Chips) */
@@ -301,17 +400,24 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    touch-action: manipulation;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform 0.13s ease, opacity 0.13s ease, background-color 0.15s ease;
   }
 
   .chip:active {
-    opacity: 0.7;
+    transform: scale(0.94);
+    opacity: 0.75;
   }
 
   .chip-remove {
     color: var(--danger);
     font-weight: 700;
     font-size: 11px;
-    padding-left: 2px;
+    display: inline-block;
+    padding: 8px 6px;
+    margin: -8px -6px -8px 0;
   }
 
   /* Mục 5: Bể mái & Nút tăng giảm 0.1 */
@@ -370,8 +476,8 @@
     background: var(--surface-sub);
     color: var(--text);
     border: none;
-    padding: 6px 8px;
-    font-size: 13px;
+    padding: 8px 11px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
   }
@@ -461,7 +567,7 @@
     right: 0;
     background: var(--surface);
     border-top: 1px solid var(--border);
-    padding: 10px 12px 18px 12px;
+    padding: 10px 12px calc(18px + env(safe-area-inset-bottom)) 12px;
     z-index: 900;
     box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.12);
   }
@@ -497,6 +603,7 @@
     background: var(--primary);
     color: #fff;
     border-color: var(--primary);
+    box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
   }
 
   .btn-copy-all {
@@ -504,13 +611,14 @@
     color: #fff;
     border-color: var(--success);
     font-size: 14px;
+    box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);
   }
 
   .toast {
     position: fixed;
-    bottom: 82px;
+    bottom: calc(96px + env(safe-area-inset-bottom));
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(10px);
     background: var(--text);
     color: var(--bg);
     padding: 9px 16px;
@@ -519,18 +627,32 @@
     font-weight: 600;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.25s ease, transform 0.25s ease;
     z-index: 999;
-    white-space: nowrap;
+    max-width: 92vw;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
 
   .toast.show {
     opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .toast-btn {
+    background: rgba(255, 255, 255, 0.16);
+    color: inherit;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    pointer-events: auto;
+    white-space: nowrap;
   }
 </style>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#2563eb">
-  <link rel="apple-touch-icon" href="icon.png">
 </head>
 <body>
 
@@ -540,6 +662,7 @@
     <div class="top-actions">
       <button class="btn-small" onclick="loadSampleReport()">Nạp mẫu</button>
       <button class="btn-small" id="theme-btn" onclick="toggleTheme()">Giao diện: Sáng</button>
+      
     </div>
   </div>
 
@@ -553,7 +676,7 @@
     <div class="date-section">
       <label class="field-label">Ngày báo cáo (Chạm lịch hoặc bấm nút chỉnh nhanh)</label>
       <div class="date-main-row">
-        <input type="text" class="date-display-input" id="report-date" placeholder="DD/MM/YYYY" oninput="onManualDateInput(this.value)">
+        <input type="text" class="date-display-input" id="report-date" placeholder="DD/MM/YYYY" inputmode="numeric" autocomplete="off" oninput="onManualDateInput(this.value)">
         <input type="date" id="native-date-picker" onchange="onNativeDatePicked(this.value)">
       </div>
       <div class="date-quick-btns">
@@ -572,7 +695,10 @@
     <div class="sec-header">
       <span class="sec-title-text" id="sec5-title-display">5. Theo dõi mực nước bể mái</span>
       <input type="text" class="sec-title-input" id="sec5-title-input" oninput="updateSec5Title(this.value)">
-      <button class="btn-small" onclick="toggleEditSec5Title()">Sửa tiêu đề</button>
+      <div class="sec-header-btns">
+        <button class="btn-small" onclick="copySec5()">Copy</button>
+        <button class="btn-small" onclick="toggleEditSec5Title()">Sửa tiêu đề</button>
+      </div>
     </div>
 
     <div class="tank-grid">
@@ -582,18 +708,18 @@
         <div class="tank-field">
           <span class="tank-label">RO</span>
           <div class="step-group">
-            <button class="step-btn" onclick="adjustTank('z1-ro', -0.1)">-</button>
-            <input type="text" id="z1-ro" class="step-input" placeholder="1,8" oninput="autoSaveDraft()">
-            <button class="step-btn" onclick="adjustTank('z1-ro', 0.1)">+</button>
+            <button class="step-btn" aria-label="Giảm 0,1 mét" onclick="adjustTank('z1-ro', -0.1)">-</button>
+            <input type="text" inputmode="decimal" id="z1-ro" class="step-input" placeholder="1,8" oninput="autoSaveDraft()">
+            <button class="step-btn" aria-label="Tăng 0,1 mét" onclick="adjustTank('z1-ro', 0.1)">+</button>
           </div>
           <span class="tank-unit">m</span>
         </div>
         <div class="tank-field">
           <span class="tank-label">SH</span>
           <div class="step-group">
-            <button class="step-btn" onclick="adjustTank('z1-sh', -0.1)">-</button>
-            <input type="text" id="z1-sh" class="step-input" placeholder="1,7" oninput="autoSaveDraft()">
-            <button class="step-btn" onclick="adjustTank('z1-sh', 0.1)">+</button>
+            <button class="step-btn" aria-label="Giảm 0,1 mét" onclick="adjustTank('z1-sh', -0.1)">-</button>
+            <input type="text" inputmode="decimal" id="z1-sh" class="step-input" placeholder="1,7" oninput="autoSaveDraft()">
+            <button class="step-btn" aria-label="Tăng 0,1 mét" onclick="adjustTank('z1-sh', 0.1)">+</button>
           </div>
           <span class="tank-unit">m</span>
         </div>
@@ -605,18 +731,18 @@
         <div class="tank-field">
           <span class="tank-label">RO</span>
           <div class="step-group">
-            <button class="step-btn" onclick="adjustTank('z3-ro', -0.1)">-</button>
-            <input type="text" id="z3-ro" class="step-input" placeholder="1,6" oninput="autoSaveDraft()">
-            <button class="step-btn" onclick="adjustTank('z3-ro', 0.1)">+</button>
+            <button class="step-btn" aria-label="Giảm 0,1 mét" onclick="adjustTank('z3-ro', -0.1)">-</button>
+            <input type="text" inputmode="decimal" id="z3-ro" class="step-input" placeholder="1,6" oninput="autoSaveDraft()">
+            <button class="step-btn" aria-label="Tăng 0,1 mét" onclick="adjustTank('z3-ro', 0.1)">+</button>
           </div>
           <span class="tank-unit">m</span>
         </div>
         <div class="tank-field">
           <span class="tank-label">SH</span>
           <div class="step-group">
-            <button class="step-btn" onclick="adjustTank('z3-sh', -0.1)">-</button>
-            <input type="text" id="z3-sh" class="step-input" placeholder="1,7" oninput="autoSaveDraft()">
-            <button class="step-btn" onclick="adjustTank('z3-sh', 0.1)">+</button>
+            <button class="step-btn" aria-label="Giảm 0,1 mét" onclick="adjustTank('z3-sh', -0.1)">-</button>
+            <input type="text" inputmode="decimal" id="z3-sh" class="step-input" placeholder="1,7" oninput="autoSaveDraft()">
+            <button class="step-btn" aria-label="Tăng 0,1 mét" onclick="adjustTank('z3-sh', 0.1)">+</button>
           </div>
           <span class="tank-unit">m</span>
         </div>
@@ -628,9 +754,9 @@
         <div class="tank-field" style="width:100%;">
           <span class="tank-label">Mực nước</span>
           <div class="step-group">
-            <button class="step-btn" onclick="adjustTank('a12-level', -0.1)">-</button>
-            <input type="text" id="a12-level" class="step-input" placeholder="2,1" oninput="autoSaveDraft()">
-            <button class="step-btn" onclick="adjustTank('a12-level', 0.1)">+</button>
+            <button class="step-btn" aria-label="Giảm 0,1 mét" onclick="adjustTank('a12-level', -0.1)">-</button>
+            <input type="text" inputmode="decimal" id="a12-level" class="step-input" placeholder="2,1" oninput="autoSaveDraft()">
+            <button class="step-btn" aria-label="Tăng 0,1 mét" onclick="adjustTank('a12-level', 0.1)">+</button>
           </div>
           <span class="tank-unit">m</span>
         </div>
@@ -663,6 +789,9 @@
   </div>
 </div>
 
+<!-- Nút avatar ghim nổi góc trên-phải màn hình -->
+<button class="avatar-btn" id="avatar-btn" onclick="onAvatarTap()" aria-label="Tài khoản"><img src="data:image/jpeg;base64,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" alt="Avatar"></button>
+
 <!-- Thanh nút cố định dưới cùng -->
 <div class="bottom-dock">
   <div class="dock-inner">
@@ -672,7 +801,7 @@
   </div>
 </div>
 
-<div class="toast" id="toast">Đã lưu báo cáo</div>
+<div class="toast" id="toast"><span id="toast-text">Đã lưu báo cáo</span><button id="toast-btn" class="toast-btn" style="display:none">Hoàn tác</button></div>
 
 <script>
 const STORAGE_KEY = "TO_NUOC_DAILY_REPORT_V3";
@@ -798,11 +927,21 @@ function formatDateToISO(dateObj) {
   return `${yyyy}-${mm}-${dd}`;
 }
 
-function parseVNDateString(vnStr) {
+function tryParseVNDate(vnStr) {
   const m = String(vnStr || "").trim().match(/^(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{4})$/);
-  if (!m) return new Date();
-  const d = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
-  return isNaN(d.getTime()) ? new Date() : d;
+  if (!m) return null;
+  const dd = Number(m[1]), mm = Number(m[2]), yyyy = Number(m[3]);
+  const d = new Date(yyyy, mm - 1, dd);
+  if (isNaN(d.getTime())) return null;
+  if (d.getDate() !== dd || d.getMonth() !== mm - 1 || d.getFullYear() !== yyyy) return null;
+  return d;
+}
+
+/* Ngày báo cáo đang dùng: ưu tiên ô nhập tay, rồi ngày đã lưu, cuối cùng là hôm nay */
+function currentReportDate() {
+  return tryParseVNDate(document.getElementById("report-date").value)
+      || tryParseVNDate(state.date)
+      || new Date();
 }
 
 function todayStr() {
@@ -810,9 +949,9 @@ function todayStr() {
 }
 
 function syncNativeDatePickerFromVN(vnStr) {
-  const d = parseVNDateString(vnStr);
+  const d = tryParseVNDate(vnStr);
   const picker = document.getElementById("native-date-picker");
-  if (picker) picker.value = formatDateToISO(d);
+  if (picker && d) picker.value = formatDateToISO(d);
 }
 
 function onNativeDatePicked(isoVal) {
@@ -827,7 +966,7 @@ function onNativeDatePicked(isoVal) {
 }
 
 function onManualDateInput(val) {
-  syncNativeDatePickerFromVN(val);
+  if (tryParseVNDate(val)) syncNativeDatePickerFromVN(val);
   autoSaveDraft();
 }
 
@@ -840,8 +979,7 @@ function setReportDateToday() {
 }
 
 function shiftReportDate(daysDelta) {
-  const currentVN = document.getElementById("report-date").value;
-  const d = parseVNDateString(currentVN);
+  const d = currentReportDate();
   d.setDate(d.getDate() + daysDelta);
   const newVN = formatDateToVN(d);
   document.getElementById("report-date").value = newVN;
@@ -863,17 +1001,59 @@ function applyTheme(theme) {
   if (btn) btn.textContent = theme === "light" ? "Giao diện: Sáng" : "Giao diện: Tối";
 }
 
+/* Nút avatar góc phải: điểm mở rộng chức năng sau này (menu tài khoản, cài đặt, đổi ảnh...) */
+function onAvatarTap() {
+  showToast("Tính năng đang phát triển");
+}
+
 function toggleTheme() {
   const cur = document.documentElement.getAttribute("data-theme") || "light";
   applyTheme(cur === "light" ? "dark" : "light");
 }
 
-function showToast(msg) {
+let toastTimer = null;
+let toastActionFn = null;
+
+function setToast(msg, actionLabel, duration) {
   const t = document.getElementById("toast");
-  t.textContent = msg;
+  document.getElementById("toast-text").textContent = msg;
+  const btn = document.getElementById("toast-btn");
+  if (actionLabel) {
+    btn.textContent = actionLabel;
+    btn.style.display = "";
+  } else {
+    btn.style.display = "none";
+  }
   t.classList.add("show");
-  setTimeout(() => t.classList.remove("show"), 2000);
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(hideToast, duration);
 }
+
+function hideToast() {
+  document.getElementById("toast").classList.remove("show");
+  toastTimer = null;
+  toastActionFn = null;
+  pendingUndo = null;
+}
+
+function showToast(msg, duration = 2000) {
+  toastActionFn = null;
+  setToast(msg, null, duration);
+}
+
+function showToastWithAction(msg, actionLabel, fn, duration = 4000) {
+  toastActionFn = fn || null;
+  setToast(msg, actionLabel, duration);
+}
+
+document.getElementById("toast-btn").addEventListener("click", () => {
+  const fn = toastActionFn;
+  toastActionFn = null;
+  if (toastTimer) clearTimeout(toastTimer);
+  document.getElementById("toast").classList.remove("show");
+  toastTimer = null;
+  if (fn) fn();
+});
 
 /* Khởi tạo & Lưu trữ */
 function loadState() {
@@ -1047,10 +1227,13 @@ function renderSections() {
   container.innerHTML = state.sections.map((sec, sIdx) => {
     const isEditingPresets = !!editingPresetMode[sec.id];
     const itemsHtml = sec.items.map((item, iIdx) => `
-      <div class="item-row">
-        <span class="item-bullet">-</span>
-        <div class="item-text" contenteditable="true" onblur="editItemText(${sIdx}, ${iIdx}, this.innerText)">${escapeHtml(item)}</div>
-        <button class="item-del" onclick="removeItem(${sIdx}, ${iIdx})">Xóa</button>
+      <div class="swipe-wrap">
+        <button class="swipe-del" onclick="clearItemContent(${sIdx}, ${iIdx})">Xóa</button>
+        <div class="item-row" data-sidx="${sIdx}" data-iidx="${iIdx}">
+          <span class="item-bullet">-</span>
+          <div class="item-text" contenteditable="true" onblur="editItemText(${sIdx}, ${iIdx}, this.innerText)">${escapeHtml(item)}</div>
+          <button class="item-del" onclick="deleteItemWithUndo(${sIdx}, ${iIdx})">Xóa</button>
+        </div>
       </div>
     `).join("");
 
@@ -1066,7 +1249,10 @@ function renderSections() {
         <div class="sec-header">
           <span class="sec-title-text" id="title-disp-${sIdx}">${escapeHtml(sec.title)}</span>
           <input type="text" class="sec-title-input" id="title-inp-${sIdx}" value="${escapeHtml(sec.title)}" oninput="updateSectionTitle(${sIdx}, this.value)">
-          <button class="btn-small" onclick="toggleEditSectionTitle(${sIdx})">Sửa mục</button>
+          <div class="sec-header-btns">
+            <button class="btn-small" onclick="copySection(${sIdx})">Copy</button>
+            <button class="btn-small" onclick="toggleEditSectionTitle(${sIdx})">Sửa mục</button>
+          </div>
         </div>
 
         <div class="item-list">${itemsHtml}</div>
@@ -1127,23 +1313,99 @@ function addItem(sIdx) {
   inp.value = "";
   autoSaveDraft();
   renderSections();
+  const newInp = document.getElementById(`add-inp-${sIdx}`);
+  if (newInp) newInp.focus({ preventScroll: true });
 }
 
 function editItemText(sIdx, iIdx, newText) {
   const cleaned = newText.trim().replace(/^-\s*/, "");
   if (!cleaned) {
     state.sections[sIdx].items.splice(iIdx, 1);
-  } else {
+    autoSaveDraft();
+    renderSections();
+  } else if (cleaned !== state.sections[sIdx].items[iIdx]) {
+    /* Chỉ lưu state + cập nhật xem trước, không render lại để nút đang bấm không bị "bay mất" */
     state.sections[sIdx].items[iIdx] = cleaned;
+    autoSaveDraft();
   }
-  autoSaveDraft();
-  renderSections();
 }
 
-function removeItem(sIdx, iIdx) {
-  state.sections[sIdx].items.splice(iIdx, 1);
+/* Nút Xóa đỏ sau khi vuốt: xóa trắng nội dung, giữ dòng để nhập báo cáo mới */
+function clearItemContent(sIdx, iIdx) {
+  state.sections[sIdx].items[iIdx] = "";
+  autoSaveDraft();
+  const row = document.querySelector(`.item-row[data-sidx="${sIdx}"][data-iidx="${iIdx}"]`);
+  if (row) {
+    row.classList.remove("swiped");
+    row.style.transform = "";
+    const txt = row.querySelector(".item-text");
+    if (txt) {
+      txt.textContent = "";
+      txt.focus({ preventScroll: true });
+    }
+  } else {
+    renderSections();
+  }
+}
+
+function clearSec5ExtraContent(idx) {
+  state.sec5Extra[idx] = "";
+  autoSaveDraft();
+  const row = document.querySelector(`.item-row[data-eidx="${idx}"]`);
+  if (row) {
+    row.classList.remove("swiped");
+    row.style.transform = "";
+    const txt = row.querySelector(".item-text");
+    if (txt) {
+      txt.textContent = "";
+      txt.focus({ preventScroll: true });
+    }
+  } else {
+    renderSec5Extra();
+  }
+}
+
+/* Xóa hẳn dòng + hoàn tác */
+let pendingUndo = null;
+
+function deleteItemWithUndo(sIdx, iIdx) {
+  const arr = state.sections[sIdx] && state.sections[sIdx].items;
+  if (!arr || iIdx < 0 || iIdx >= arr.length) return;
+  const item = arr[iIdx];
+  arr.splice(iIdx, 1);
   autoSaveDraft();
   renderSections();
+  pendingUndo = { kind: "item", sIdx, iIdx, item };
+  showToastWithAction("Đã xóa dòng", "Hoàn tác", undoDelete);
+}
+
+function deleteSec5ExtraWithUndo(idx) {
+  const arr = state.sec5Extra || [];
+  if (idx < 0 || idx >= arr.length) return;
+  const item = arr[idx];
+  arr.splice(idx, 1);
+  autoSaveDraft();
+  renderSec5Extra();
+  pendingUndo = { kind: "sec5extra", idx, item };
+  showToastWithAction("Đã xóa dòng", "Hoàn tác", undoDelete);
+}
+
+function undoDelete() {
+  if (!pendingUndo) return;
+  const u = pendingUndo;
+  pendingUndo = null;
+  if (u.kind === "item" && state.sections[u.sIdx]) {
+    const arr = state.sections[u.sIdx].items;
+    arr.splice(Math.min(u.iIdx, arr.length), 0, u.item);
+    autoSaveDraft();
+    renderSections();
+  } else if (u.kind === "sec5extra") {
+    const arr = state.sec5Extra;
+    arr.splice(Math.min(u.idx, arr.length), 0, u.item);
+    autoSaveDraft();
+    renderSec5Extra();
+  }
+  showToast("Đã hoàn tác");
 }
 
 function handleChipClick(sIdx, pIdx) {
@@ -1172,6 +1434,8 @@ function addPreset(sIdx) {
   inp.value = "";
   autoSaveDraft();
   renderSections();
+  const newPresetInp = document.getElementById(`preset-inp-${sIdx}`);
+  if (newPresetInp) newPresetInp.focus({ preventScroll: true });
 }
 
 function removePreset(sIdx, pIdx) {
@@ -1199,10 +1463,13 @@ function updateSec5Title(val) {
 function renderSec5Extra() {
   const list = document.getElementById("sec5-extra-list");
   list.innerHTML = (state.sec5Extra || []).map((item, idx) => `
-    <div class="item-row">
-      <span class="item-bullet">-</span>
-      <div class="item-text" contenteditable="true" onblur="editSec5Extra(${idx}, this.innerText)">${escapeHtml(item)}</div>
-      <button class="item-del" onclick="removeSec5Extra(${idx})">Xóa</button>
+    <div class="swipe-wrap">
+      <button class="swipe-del" onclick="clearSec5ExtraContent(${idx})">Xóa</button>
+      <div class="item-row" data-eidx="${idx}">
+        <span class="item-bullet">-</span>
+        <div class="item-text" contenteditable="true" onblur="editSec5Extra(${idx}, this.innerText)">${escapeHtml(item)}</div>
+        <button class="item-del" onclick="deleteSec5ExtraWithUndo(${idx})">Xóa</button>
+      </div>
     </div>
   `).join("");
 }
@@ -1215,43 +1482,39 @@ function addSec5Extra() {
   inp.value = "";
   autoSaveDraft();
   renderSec5Extra();
+  const newExtraInp = document.getElementById("sec5-extra-input");
+  if (newExtraInp) newExtraInp.focus({ preventScroll: true });
 }
 
 function editSec5Extra(idx, val) {
   const clean = val.trim().replace(/^-\s*/, "");
-  if (!clean) state.sec5Extra.splice(idx, 1);
-  else state.sec5Extra[idx] = clean;
-  autoSaveDraft();
-  renderSec5Extra();
-}
-
-function removeSec5Extra(idx) {
-  state.sec5Extra.splice(idx, 1);
-  autoSaveDraft();
-  renderSec5Extra();
-}
-
-/* Tạo chuỗi Báo cáo hoàn chỉnh */
-function buildReportText() {
-  const lines = [];
-  lines.push(state.header || "BÁO CÁO CÔNG VIỆC – TỔ NƯỚC");
-  lines.push("");
-  lines.push(`Ngày: ${state.date || todayStr()}`);
-  lines.push("");
-
-  for (const sec of state.sections) {
-    lines.push(sec.title);
-    if (sec.items.length === 0) {
-      lines.push("- Không phát sinh.");
-    } else {
-      for (const item of sec.items) {
-        lines.push(`- ${item}`);
-      }
-    }
-    lines.push("");
+  if (!clean) {
+    state.sec5Extra.splice(idx, 1);
+    autoSaveDraft();
+    renderSec5Extra();
+  } else if (clean !== state.sec5Extra[idx]) {
+    state.sec5Extra[idx] = clean;
+    autoSaveDraft();
   }
+}
 
-  lines.push(state.sec5Title || "5. Theo dõi mực nước bể mái");
+
+
+/* Dựng text cho từng mục riêng lẻ */
+function buildSectionText(sec) {
+  const lines = [sec.title];
+  if (sec.items.length === 0) {
+    lines.push("- Không phát sinh.");
+  } else {
+    for (const item of sec.items) {
+      lines.push(`- ${item}`);
+    }
+  }
+  return lines.join("\n");
+}
+
+function buildSec5Text() {
+  const lines = [state.sec5Title || "5. Theo dõi mực nước bể mái"];
   const t = state.tanks || {};
   if (t.z1_ro || t.z1_sh) {
     lines.push(`- Khu Z1: RO ${t.z1_ro || "..."} m – SH ${t.z1_sh || "..."} m`);
@@ -1265,8 +1528,45 @@ function buildReportText() {
   for (const ex of state.sec5Extra || []) {
     lines.push(`- ${ex}`);
   }
+  return lines.join("\n");
+}
+
+/* Tạo chuỗi Báo cáo hoàn chỉnh */
+function buildReportText() {
+  const lines = [];
+  lines.push(state.header || "BÁO CÁO CÔNG VIỆC – TỔ NƯỚC");
+  lines.push("");
+  lines.push(`Ngày: ${state.date || todayStr()}`);
+  lines.push("");
+
+  for (const sec of state.sections) {
+    lines.push(buildSectionText(sec));
+    lines.push("");
+  }
+
+  lines.push(buildSec5Text());
 
   return lines.join("\n").trim();
+}
+
+/* Rời focus khỏi ô đang sửa để nội dung mới nhất được lưu trước khi copy */
+function blurActiveInput() {
+  const ae = document.activeElement;
+  if (ae && ae.blur) ae.blur();
+}
+
+async function copySection(sIdx) {
+  blurActiveInput();
+  autoSaveDraft();
+  await copyTextToClipboard(buildSectionText(state.sections[sIdx]));
+  showToast(`Đã copy mục ${sIdx + 1}`);
+}
+
+async function copySec5() {
+  blurActiveInput();
+  autoSaveDraft();
+  await copyTextToClipboard(buildSec5Text());
+  showToast("Đã copy mục 5");
 }
 
 function updatePreview() {
@@ -1292,6 +1592,7 @@ async function copyTextToClipboard(text) {
 }
 
 async function copyFullReport() {
+  blurActiveInput();
   autoSaveDraft();
   const text = buildReportText();
   await copyTextToClipboard(text);
@@ -1322,17 +1623,130 @@ function loadSampleReport() {
   showToast("Đã nạp lại báo cáo mẫu");
 }
 
-loadState();
-</script>
+/* Vuốt trái trên dòng để hiện nút Xóa (mobile) */
+let swipeTrack = null;
+let swallowNextClick = false;
+const SWIPE_REVEAL = 78;
+const SWIPE_SNAP = 40;
+const SWIPE_FULL = 120;
 
-<script>
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./service-worker.js")
-      .then(reg => console.log("Service Worker registered!", reg))
-      .catch(err => console.log("Service Worker registration failed:", err));
-  });
+function findSwipeRow(el) {
+  return el && el.closest ? el.closest(".swipe-wrap > .item-row") : null;
 }
+
+document.addEventListener("touchstart", (e) => {
+  const onDelBtn = e.target.closest ? e.target.closest(".swipe-del") : null;
+  let row = findSwipeRow(e.target);
+  if (onDelBtn && !row) {
+    /* Bấm nút Xóa đỏ: nút nằm sau hàng (không phải con của .item-row)
+       nên phải tìm hàng cùng wrap, nếu không hàng sẽ tự đóng trước khi click kịp chạy */
+    const wrap = onDelBtn.closest(".swipe-wrap");
+    row = wrap ? wrap.querySelector(".item-row") : null;
+  }
+
+  document.querySelectorAll(".item-row.swiped").forEach((r) => {
+    if (r !== row) {
+      r.classList.remove("swiped");
+      r.style.transform = "";
+    }
+  });
+
+  if (row && row.classList.contains("swiped") && !onDelBtn) {
+    row.classList.remove("swiped");
+    row.style.transform = "";
+    swallowNextClick = true;
+    swipeTrack = null;
+    return;
+  }
+
+  if (!row || row.classList.contains("swiped") || onDelBtn) {
+    swipeTrack = null;
+    return;
+  }
+
+  const ae = document.activeElement;
+  if (ae && ae.isContentEditable && row.contains(ae)) {
+    swipeTrack = null;
+    return;
+  }
+
+  const t = e.touches[0];
+  swipeTrack = { row, startX: t.clientX, startY: t.clientY, dx: 0, active: false };
+}, { passive: true });
+
+document.addEventListener("touchmove", (e) => {
+  if (!swipeTrack) return;
+  const t = e.touches[0];
+  const dx = t.clientX - swipeTrack.startX;
+  const dy = t.clientY - swipeTrack.startY;
+
+  if (!swipeTrack.active) {
+    if (Math.abs(dx) > 12 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+      swipeTrack.active = true;
+      swipeTrack.row.style.transition = "none";
+    } else if (Math.abs(dy) > 12) {
+      swipeTrack = null;
+      return;
+    } else {
+      return;
+    }
+  }
+
+  if (dx < 0) {
+    e.preventDefault();
+    const x = Math.max(dx, -170);
+    swipeTrack.row.style.transform = `translateX(${x}px)`;
+    swipeTrack.dx = x;
+  } else {
+    swipeTrack.row.style.transform = "";
+    swipeTrack.dx = 0;
+  }
+}, { passive: false });
+
+document.addEventListener("touchend", () => {
+  if (!swipeTrack) return;
+  const { row, dx, active } = swipeTrack;
+  swipeTrack = null;
+  if (active && dx <= -SWIPE_FULL) {
+    /* Vuốt xa: xóa hẳn dòng (có nút Hoàn tác) */
+    const ds = row.dataset || {};
+    const isSec5 = ds.eidx !== undefined && ds.eidx !== "";
+    const sIdx = Number(ds.sidx), iIdx = Number(ds.iidx), eIdx = Number(ds.eidx);
+    if (isSec5 ? isNaN(eIdx) : (isNaN(sIdx) || isNaN(iIdx))) return;
+    row.style.transition = "transform 0.25s ease, opacity 0.25s ease";
+    row.style.transform = "translateX(-110%)";
+    row.style.opacity = "0";
+    setTimeout(() => {
+      if (isSec5) deleteSec5ExtraWithUndo(eIdx);
+      else deleteItemWithUndo(sIdx, iIdx);
+    }, 240);
+    return;
+  }
+  row.style.transition = "";
+  row.style.transform = "";
+  if (active && dx <= -SWIPE_SNAP) {
+    row.classList.add("swiped");
+  } else {
+    row.classList.remove("swiped");
+  }
+}, { passive: true });
+
+document.addEventListener("touchcancel", () => {
+  if (!swipeTrack) return;
+  swipeTrack.row.style.transition = "";
+  swipeTrack.row.style.transform = "";
+  swipeTrack = null;
+}, { passive: true });
+
+document.addEventListener("click", (e) => {
+  if (swallowNextClick) {
+    swallowNextClick = false;
+    e.stopPropagation();
+    e.preventDefault();
+  }
+}, true);
+
+loadState();
 </script>
 </body>
 </html>
