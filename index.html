@@ -360,6 +360,19 @@
     box-shadow: 0 2px 6px rgba(37, 99, 235, 0.3);
   }
 
+  .btn-paste {
+    background: var(--surface-sub);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0 12px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
   /* Thẻ bấm nhanh (Quick Chips) */
   .chips-wrap {
     margin-top: 8px;
@@ -772,6 +785,7 @@
     <div class="item-list" id="sec5-extra-list"></div>
     <div class="add-row">
       <input type="text" id="sec5-extra-input" placeholder="Thêm ghi chú bể mái khác (nếu có)..." onkeydown="if(event.key==='Enter') addSec5Extra()">
+      <button class="btn-paste" onclick="pasteInto('sec5-extra-input')">📋 Dán</button>
       <button class="btn-add" onclick="addSec5Extra()">+ Thêm</button>
     </div>
   </div>
@@ -794,7 +808,7 @@
     <div class="preview-box" id="report-preview"></div>
   </div>
 
-  <div class="ver-tag">Cập nhật 19/10 19:15</div>
+  <div class="ver-tag">Cập nhật 21/10 16:41</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
@@ -1267,6 +1281,7 @@ function renderSections() {
 
         <div class="add-row">
           <input type="text" id="add-inp-${sIdx}" placeholder="Nhập công việc mới vào mục ${sIdx + 1}..." onkeydown="if(event.key==='Enter') addItem(${sIdx})">
+          <button class="btn-paste" onclick="pasteInto('add-inp-${sIdx}')">📋 Dán</button>
           <button class="btn-add" onclick="addItem(${sIdx})">+ Thêm</button>
         </div>
 
@@ -1311,6 +1326,26 @@ function updateSectionTitle(sIdx, val) {
   state.sections[sIdx].title = val;
   document.getElementById(`title-disp-${sIdx}`).textContent = val;
   autoSaveDraft();
+}
+
+async function pasteInto(inputId) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  try {
+    const text = await navigator.clipboard.readText();
+    if (text) {
+      input.value = text;
+      input.focus();
+      showToast("Đã dán");
+    } else {
+      input.focus();
+      showToast("Clipboard đang trống");
+    }
+  } catch (_) {
+    /* iOS chưa cấp quyền đọc clipboard: hướng dẫn dán thủ công */
+    input.focus();
+    showToast("Chưa đọc được clipboard — bấm giữ ô nhập rồi chọn Dán");
+  }
 }
 
 function addItem(sIdx) {
