@@ -182,6 +182,94 @@
     pointer-events: none;
   }
 
+  /* Menu AI sổ xuống dưới avatar */
+  .avatar-menu {
+    position: fixed;
+    top: calc(58px + env(safe-area-inset-top));
+    right: 12px;
+    z-index: 950;
+    min-width: 190px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    padding: 8px;
+  }
+  .avatar-menu-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    color: var(--text);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .avatar-menu-item:active {
+    background: var(--surface-sub);
+  }
+
+  /* Icon on/off trạng thái key */
+  .key-toggle {
+    display: inline-flex;
+    align-items: center;
+    width: 46px;
+    height: 26px;
+    border-radius: 13px;
+    background: var(--border);
+    padding: 3px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .key-toggle .key-toggle-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    transition: transform 0.2s;
+  }
+  .key-toggle.on {
+    background: #16a34a;
+  }
+  .key-toggle.on .key-toggle-dot {
+    transform: translateX(20px);
+  }
+  .prompt-item {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 12px;
+    margin-bottom: 8px;
+  }
+  .prompt-item-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+  .prompt-item-name {
+    font-weight: 700;
+    font-size: 14px;
+  }
+  .prompt-item-content {
+    font-size: 12px;
+    line-height: 1.5;
+    color: var(--text-muted);
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 120px;
+    overflow-y: auto;
+    margin-bottom: 8px;
+  }
+  .prompt-item-actions {
+    display: flex;
+    gap: 6px;
+  }
+
   /* Card chung */
   .card {
     background: var(--surface);
@@ -639,7 +727,7 @@
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.25s ease, transform 0.25s ease;
-    z-index: 999;
+    z-index: 1100;
     max-width: 92vw;
     text-align: center;
     display: flex;
@@ -658,6 +746,181 @@
     color: var(--text-muted);
     margin: 2px 0 10px;
     user-select: none;
+  }
+
+  /* Cài đặt AI + hộp thoại soát chính tả */
+  .ai-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin: 0 0 8px;
+  }
+  .ai-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 700;
+    margin: 8px 0 4px;
+  }
+  .ai-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 4px;
+  }
+  .ai-status {
+    display: inline-flex;
+    align-items: center;
+  }
+  .ai-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px 12px calc(12px + env(safe-area-inset-bottom));
+  }
+  .ai-modal {
+    background: var(--surface);
+    border-radius: 14px;
+    width: 100%;
+    max-width: 680px;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .ai-modal-title {
+    font-size: 14px;
+    font-weight: 800;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .ai-modal-body {
+    padding: 12px 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .ai-modal-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .ai-modal-actions .btn-add {
+    padding: 10px 14px;
+  }
+  .chat-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+  }
+  .chat-title-row .ai-modal-title {
+    padding: 0;
+    border-bottom: none;
+  }
+  .chat-msgs {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .chat-msg {
+    max-width: 88%;
+    padding: 8px 12px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .chat-msg.user {
+    align-self: flex-end;
+    background: var(--primary);
+    color: #fff;
+  }
+  .chat-msg.ai {
+    align-self: flex-start;
+    background: var(--surface-sub);
+    color: var(--text);
+  }
+  .chat-input-row {
+    display: flex;
+    gap: 8px;
+    padding: 10px 14px;
+    border-top: 1px solid var(--border);
+  }
+  .chat-input-row input {
+    flex: 1;
+    margin-bottom: 0;
+  }
+  .chat-input-row .btn-add:disabled {
+    opacity: 0.5;
+  }
+  .ai-modal-tabs {
+    display: flex;
+    gap: 6px;
+    padding: 10px 14px 0;
+  }
+  .ai-tab {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .ai-tab.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+  }
+  .ai-modal-body del {
+    color: var(--danger);
+    text-decoration: line-through;
+    opacity: 0.85;
+  }
+  .ai-modal-body ins {
+    color: #16a34a;
+    font-weight: 700;
+    text-decoration: none;
+  }
+  .chat-add-btn {
+    margin-top: 6px;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 20px;
+    padding: 4px 10px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .chat-add-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 6px;
+  }
+  .chat-add-picker button {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 6px;
+    padding: 5px 9px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
   }
 
   .toast-btn {
@@ -803,15 +1066,25 @@
   <div class="card">
     <div class="sec-header">
       <span class="sec-title-text">Xem trước văn bản báo cáo</span>
-      <button class="btn-small" onclick="copyFullReport()">Copy nhanh</button>
+      <div class="sec-header-btns">
+        <button class="btn-small" onclick="copyFullReport()">Copy nhanh</button>
+      </div>
     </div>
     <div class="preview-box" id="report-preview"></div>
   </div>
 
-  <div class="ver-tag">Cập nhật 21/10 16:41</div>
+  <!-- Cài đặt AI: key chỉ lưu trên máy này (localStorage), không nằm trong file -->
+  <div class="ver-tag">Cập nhật 23/10 09:09</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
+<div class="avatar-menu" id="avatar-menu" style="display:none">
+  <button class="avatar-menu-item" onclick="avatarMenuAction('proofread')">Soát chính tả</button>
+  <button class="avatar-menu-item" onclick="avatarMenuAction('chat')">Chat AI</button>
+  <button class="avatar-menu-item" onclick="avatarMenuAction('prompts')">Prompt</button>
+  <button class="avatar-menu-item" onclick="avatarMenuAction('test')">Kiểm tra kết nối</button>
+  <button class="avatar-menu-item" onclick="avatarMenuAction('settings')">Cài đặt AI</button>
+</div>
 <button class="avatar-btn" id="avatar-btn" onclick="onAvatarTap()" aria-label="Tài khoản"><img src="data:image/jpeg;base64,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" alt="Avatar"></button>
 
 <!-- Thanh nút cố định dưới cùng -->
@@ -824,6 +1097,94 @@
 </div>
 
 <div class="toast" id="toast"><span id="toast-text">Đã lưu báo cáo</span><button id="toast-btn" class="toast-btn" style="display:none">Hoàn tác</button></div>
+
+<div class="ai-modal-backdrop" id="chat-modal" style="display:none">
+  <div class="ai-modal" style="height: 82vh;">
+    <div class="chat-title-row">
+      <div class="ai-modal-title">Chat AI</div>
+      <div style="display:flex; gap:6px;">
+        <button class="btn-small" onclick="clearChatHistory()">Xóa chat</button>
+        <button class="btn-small" onclick="closeChat()">Đóng</button>
+      </div>
+    </div>
+    <div class="chat-msgs" id="chat-msgs"></div>
+    <div class="chat-input-row">
+      <input type="text" id="chat-input" placeholder="Hỏi gì đó..." autocomplete="off" onkeydown="if(event.key==='Enter') sendChat()">
+      <button class="btn-add" id="chat-send-btn" style="padding:10px 14px;" onclick="sendChat()">Gửi</button>
+    </div>
+  </div>
+</div>
+
+<div class="ai-modal-backdrop" id="prompt-modal" style="display:none">
+  <div class="ai-modal" style="height: 82vh;">
+    <div class="chat-title-row">
+      <div class="ai-modal-title">Prompt cho Chat AI</div>
+      <button class="btn-small" onclick="closePromptPanel()">Đóng</button>
+    </div>
+    <div style="flex:1; overflow-y:auto; padding:12px 14px;">
+      <p class="ai-note">Bật/tắt từng prompt để Chat AI làm theo — dùng được nhiều prompt cùng lúc. Prompt mặc định giúp anh soát lỗi và thêm việc vào báo cáo.</p>
+      <div id="prompt-list"></div>
+      <div id="prompt-restore-wrap" style="display:none; margin-top:8px;">
+        <button class="btn-paste" onclick="restoreDefaultPrompt()">Khôi phục prompt mặc định</button>
+      </div>
+      <label class="ai-label" for="prompt-name">Tên prompt mới</label>
+      <input type="text" id="prompt-name" placeholder="VD: Viết ngắn gọn cho Zalo" autocomplete="off">
+      <label class="ai-label" for="prompt-content">Nội dung prompt</label>
+      <textarea id="prompt-content" rows="4" placeholder="Nhập nội dung prompt..." autocomplete="off"></textarea>
+      <div style="margin-top:10px;">
+        <button class="btn-add" style="padding:10px 14px;" onclick="addPrompt()">Thêm prompt</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ai-modal-backdrop" id="ai-settings-modal" style="display:none">
+  <div class="ai-modal" style="height: 82vh;">
+    <div class="chat-title-row">
+      <div class="ai-modal-title">Cài đặt AI — Soát chính tả</div>
+      <button class="btn-small" onclick="closeAiSettingsPanel()">Đóng</button>
+    </div>
+    <div style="flex:1; overflow-y:auto; padding:12px 14px;">
+      <p class="ai-note">Bấm chọn 1 nhà cung cấp rồi dán key vào, bấm Lưu. Key chỉ lưu trong máy của anh, không đưa lên GitHub. Có nhiều gói free không cần thẻ — Gemini, Groq, OpenRouter.</p>
+      <div class="ai-presets">
+        <button class="btn-small" onclick="applyAiPreset('gemini')">Gemini (free)</button>
+        <button class="btn-small" onclick="applyAiPreset('groq')">Groq (free)</button>
+        <button class="btn-small" onclick="applyAiPreset('openrouter')">OpenRouter (free)</button>
+      </div>
+      <label class="ai-label" for="ai-key">API Key</label>
+      <div style="display:flex; gap:6px; align-items:stretch;">
+        <input type="password" id="ai-key" placeholder="Dán API key vào đây..." autocomplete="off" style="flex:1; margin-bottom:0;">
+        <button class="btn-paste" style="padding:10px 12px;" onclick="pasteInto('ai-key')">📋 Dán</button>
+      </div>
+      <label class="ai-label" for="ai-base">Base URL</label>
+      <input type="text" id="ai-base" value="https://generativelanguage.googleapis.com/v1beta/openai" autocomplete="off">
+      <label class="ai-label" for="ai-model">Model</label>
+      <input type="text" id="ai-model" value="gemini-3.6-flash" autocomplete="off">
+      <label class="ai-label" for="ai-instruct">Lệnh cố định cho AI (AI nhớ và làm theo mỗi lần chat)</label>
+      <textarea id="ai-instruct" rows="3" placeholder="VD: Luôn trả lời ngắn gọn. Khi gợi ý công việc thì viết đúng 1 dòng để thêm thẳng vào báo cáo." autocomplete="off"></textarea>
+      <div style="margin-top:10px; display:flex; gap:8px; align-items:center;">
+        <button class="btn-add" style="padding:10px 14px;" onclick="saveAiSettings()">Lưu cài đặt</button>
+        <button class="btn-paste" style="padding:10px 12px;" onclick="testAiConnection()">Kiểm tra kết nối</button>
+        <span class="ai-status" id="ai-status"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="ai-modal-backdrop" id="ai-modal" style="display:none" onclick="if(event.target===this) closeAiModal()">
+  <div class="ai-modal">
+    <div class="ai-modal-title">Bản đã soát chính tả</div>
+    <div class="ai-modal-tabs" id="ai-modal-tabs" style="display:none">
+      <button class="ai-tab active" id="ai-tab-text" onclick="showProofreadTab('text')">Bản đã sửa</button>
+      <button class="ai-tab" id="ai-tab-diff" onclick="showProofreadTab('diff')">Đã sửa gì</button>
+    </div>
+    <div class="ai-modal-body" id="ai-modal-text"></div>
+    <div class="ai-modal-actions">
+      <button class="btn-add" id="ai-modal-copy" onclick="copyProofreadText()">Copy bản đã sửa</button>
+      <button class="btn-paste" onclick="closeAiModal()">Đóng</button>
+    </div>
+  </div>
+</div>
 
 <script>
 const STORAGE_KEY = "TO_NUOC_DAILY_REPORT_V3";
@@ -1023,10 +1384,52 @@ function applyTheme(theme) {
   if (btn) btn.textContent = theme === "light" ? "Giao diện: Sáng" : "Giao diện: Tối";
 }
 
-/* Nút avatar góc phải: điểm mở rộng chức năng sau này (menu tài khoản, cài đặt, đổi ảnh...) */
+/* Nút avatar góc phải: bấm để sổ menu AI xuống dưới */
 function onAvatarTap() {
-  showToast("Tính năng đang phát triển");
+  const menu = document.getElementById("avatar-menu");
+  if (!menu) return;
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
 }
+
+function closeAvatarMenu() {
+  const menu = document.getElementById("avatar-menu");
+  if (menu) menu.style.display = "none";
+}
+
+function openAiSettingsPanel() {
+  loadAiSettingsIntoForm();
+  document.getElementById("ai-settings-modal").style.display = "flex";
+}
+
+function closeAiSettingsPanel() {
+  document.getElementById("ai-settings-modal").style.display = "none";
+}
+
+function avatarMenuAction(action) {
+  closeAvatarMenu();
+  if (action === "proofread") proofreadReport();
+  else if (action === "chat") openChat();
+  else if (action === "prompts") openPromptPanel();
+  else if (action === "test") testAiConnection();
+  else if (action === "settings") openAiSettingsPanel();
+}
+
+function openPromptPanel() {
+  renderPrompts();
+  document.getElementById("prompt-modal").style.display = "flex";
+}
+
+function closePromptPanel() {
+  document.getElementById("prompt-modal").style.display = "none";
+}
+
+document.addEventListener("click", (e) => {
+  const menu = document.getElementById("avatar-menu");
+  if (!menu || menu.style.display === "none") return;
+  if (menu.contains(e.target)) return;
+  if (e.target.closest && e.target.closest(".avatar-btn")) return;
+  closeAvatarMenu();
+});
 
 function toggleTheme() {
   const cur = document.documentElement.getAttribute("data-theme") || "light";
@@ -1105,6 +1508,7 @@ function loadState() {
   renderSec5Extra();
   renderSavedHistory();
   updatePreview();
+  loadAiSettingsIntoForm();
 }
 
 function resetToSample() {
@@ -1185,7 +1589,7 @@ function renderSavedHistory() {
   document.getElementById("saved-count").textContent = savedHistory.length;
 
   if (savedHistory.length === 0) {
-    container.innerHTML = `<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:10px;">Chưa có bản lưu nào. Bấm nút "Lưu báo cáo" ở dưới đáy để lưu lại theo ngày.</div>`;
+    container.innerHTML = `<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:10px;">Chưa có bản lưu nào. Bấm nút "Lưu báo cáo" ở phía dưới để lưu lại theo ngày.</div>`;
     return;
   }
 
@@ -1332,6 +1736,7 @@ async function pasteInto(inputId) {
   const input = document.getElementById(inputId);
   if (!input) return;
   try {
+    if (!navigator.clipboard || !navigator.clipboard.readText) throw new Error("no clipboard");
     const text = await navigator.clipboard.readText();
     if (text) {
       input.value = text;
@@ -1642,6 +2047,615 @@ async function copyFullReport() {
   showToast("Đã sao chép toàn bộ báo cáo");
 }
 
+/* ---------- AI: Soát chính tả qua API tương thích OpenAI ---------- */
+const AI_LS_KEY = "TO_NUOC_AI_KEY_V1";
+const AI_LS_BASE = "TO_NUOC_AI_BASE_V1";
+const AI_LS_MODEL = "TO_NUOC_AI_MODEL_V1";
+const AI_DEFAULT_BASE = "https://generativelanguage.googleapis.com/v1beta/openai";
+const AI_DEFAULT_MODEL = "gemini-3.6-flash";
+let lastProofreadText = "";
+
+function getAiSettings() {
+  let base = localStorage.getItem(AI_LS_BASE) || AI_DEFAULT_BASE;
+  let model = localStorage.getItem(AI_LS_MODEL) || AI_DEFAULT_MODEL;
+  /* Google khóa model 2.5 với key mới tạo (gọi là 404) -> tự đổi sang model 3.x */
+  if (model === "gemini-2.5-flash") {
+    model = "gemini-3.6-flash";
+    localStorage.setItem(AI_LS_MODEL, model);
+  }
+  /* Đã bỏ Meta: cài đặt Meta cũ tự chuyển sang Gemini mặc định */
+  if (base.replace(/\/+$/, "") === "https://api.meta.ai/v1" || model === "muse-spark-1.3" || model === "muse-wonder-1.0") {
+    base = AI_DEFAULT_BASE;
+    model = AI_DEFAULT_MODEL;
+    localStorage.setItem(AI_LS_BASE, base);
+    localStorage.setItem(AI_LS_MODEL, model);
+  }
+  return {
+    key: (localStorage.getItem(AI_LS_KEY) || "").trim(),
+    base: base.replace(/\/+$/, ""),
+    model: model,
+  };
+}
+
+async function apiErrorDetail(res) {
+  try {
+    const d = await res.json();
+    if (d && d.error) {
+      if (typeof d.error === "string") return d.error;
+      if (d.error.message) return d.error.message;
+    }
+  } catch (_) {}
+  return "";
+}
+
+/* Gọi API có giới hạn thời gian: quá 60s coi như mạng treo, báo lỗi thay vì kẹt mãi */
+async function fetchWithTimeout(url, opts) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 60000);
+  try {
+    return await fetch(url, Object.assign({}, opts, { signal: ctrl.signal }));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+const AI_PRESETS = {
+  gemini: { base: "https://generativelanguage.googleapis.com/v1beta/openai", model: "gemini-3.6-flash" },
+  groq: { base: "https://api.groq.com/openai/v1", model: "openai/gpt-oss-20b" },
+  openrouter: { base: "https://openrouter.ai/api/v1", model: "google/gemma-4-31b-it:free" },
+};
+
+function applyAiPreset(name) {
+  const pr = AI_PRESETS[name];
+  if (!pr) return;
+  const baseEl = document.getElementById("ai-base");
+  const modelEl = document.getElementById("ai-model");
+  if (baseEl) baseEl.value = pr.base;
+  if (modelEl) modelEl.value = pr.model;
+  showToast("Đã chọn " + name + " — dán key rồi bấm Lưu cài đặt");
+}
+
+const AI_LS_CONN = "TO_NUOC_AI_CONN_V1"; /* kết quả kiểm tra kết nối gần nhất: "ok" | "fail" */
+
+function getConnState() {
+  if (!getAiSettings().key) return false;
+  return localStorage.getItem(AI_LS_CONN) === "ok";
+}
+
+function updateAiStatus() {
+  const el = document.getElementById("ai-status");
+  if (!el) return;
+  const connected = getConnState();
+  el.innerHTML = '<span class="key-toggle ' + (connected ? "on" : "off") + '" onclick="testAiConnection()" title="' + (connected ? "Đã kết nối" : "Chưa kết nối") + '"><span class="key-toggle-dot"></span></span>';
+}
+
+function loadAiSettingsIntoForm() {
+  const s = getAiSettings();
+  const baseEl = document.getElementById("ai-base");
+  const modelEl = document.getElementById("ai-model");
+  const insEl = document.getElementById("ai-instruct");
+  if (baseEl) baseEl.value = s.base;
+  if (modelEl) modelEl.value = s.model;
+  if (insEl) insEl.value = localStorage.getItem(AI_LS_INSTRUCT) || "";
+  updateAiStatus();
+}
+
+function saveAiSettings() {
+  const old = getAiSettings();
+  const keyEl = document.getElementById("ai-key");
+  const baseEl = document.getElementById("ai-base");
+  const modelEl = document.getElementById("ai-model");
+  const key = keyEl ? keyEl.value.trim() : "";
+  if (key) {
+    localStorage.setItem(AI_LS_KEY, key);
+    keyEl.value = "";
+  }
+  const base = baseEl ? baseEl.value.trim() : "";
+  const model = modelEl ? modelEl.value.trim() : "";
+  if (base) localStorage.setItem(AI_LS_BASE, base);
+  if (model) localStorage.setItem(AI_LS_MODEL, model);
+  const insEl = document.getElementById("ai-instruct");
+  localStorage.setItem(AI_LS_INSTRUCT, insEl ? insEl.value.trim() : "");
+  const s2 = getAiSettings();
+  if (old.key !== s2.key || old.base !== s2.base || old.model !== s2.model) {
+    localStorage.removeItem(AI_LS_CONN);
+  }
+  updateAiStatus();
+  testAiConnection();
+}
+
+function openAiModal(text, withCopy) {
+  document.getElementById("ai-modal-text").textContent = text;
+  document.getElementById("ai-modal-copy").style.display = withCopy ? "" : "none";
+  const tabs = document.getElementById("ai-modal-tabs");
+  if (tabs) tabs.style.display = withCopy ? "flex" : "none";
+  if (withCopy) {
+    const tBtn = document.getElementById("ai-tab-text");
+    const dBtn = document.getElementById("ai-tab-diff");
+    if (tBtn) tBtn.classList.add("active");
+    if (dBtn) { dBtn.classList.remove("active"); dBtn.textContent = "Đã sửa gì"; }
+  }
+  document.getElementById("ai-modal").style.display = "flex";
+}
+
+function closeAiModal() {
+  document.getElementById("ai-modal").style.display = "none";
+}
+
+async function copyProofreadText() {
+  if (!lastProofreadText) return;
+  await copyTextToClipboard(lastProofreadText);
+  showToast("Đã sao chép bản đã soát");
+}
+
+/* ---------- Đối chiếu thay đổi: diff theo từ (LCS) ---------- */
+function diffOps(a, b) {
+  const n = a.length, m = b.length;
+  const dp = new Uint32Array((n + 1) * (m + 1));
+  const at = (i, j) => i * (m + 1) + j;
+  for (let i = 1; i <= n; i++) {
+    for (let j = 1; j <= m; j++) {
+      dp[at(i, j)] = a[i - 1] === b[j - 1] ? dp[at(i - 1, j - 1)] + 1 : Math.max(dp[at(i - 1, j)], dp[at(i, j - 1)]);
+    }
+  }
+  const ops = [];
+  let i = n, j = m;
+  while (i > 0 || j > 0) {
+    if (i > 0 && j > 0 && a[i - 1] === b[j - 1]) { ops.push({ t: "eq", v: a[i - 1] }); i--; j--; }
+    else if (j > 0 && (i === 0 || dp[at(i, j - 1)] >= dp[at(i - 1, j)])) { ops.push({ t: "ins", v: b[j - 1] }); j--; }
+    else { ops.push({ t: "del", v: a[i - 1] }); i--; }
+  }
+  ops.reverse();
+  return ops;
+}
+
+function computeDiffHtml(oldText, newText) {
+  const oldT = oldText.match(/\S+|\s+/g) || [];
+  const newT = newText.match(/\S+|\s+/g) || [];
+  let ops;
+  if (oldT.length <= 2000 && newT.length <= 2000) {
+    ops = diffOps(oldT, newT);
+  } else {
+    /* Văn bản quá dài: đối chiếu theo dòng cho nhẹ */
+    const lineOps = diffOps(oldText.split("\n"), newText.split("\n"));
+    ops = [];
+    lineOps.forEach((op, k) => {
+      if (k > 0) ops.push({ t: "eq", v: "\n" });
+      ops.push(op);
+    });
+  }
+  let html = "", groups = 0, inChange = false;
+  ops.forEach((op) => {
+    if (op.t === "eq") { html += escapeHtml(op.v); inChange = false; }
+    else {
+      if (!inChange) { groups++; inChange = true; }
+      html += op.t === "del" ? "<del>" + escapeHtml(op.v) + "</del>" : "<ins>" + escapeHtml(op.v) + "</ins>";
+    }
+  });
+  return { html: html, groups: groups };
+}
+
+let lastProofreadOriginal = "";
+let lastProofreadDiffHtml = null;
+
+function showProofreadTab(which) {
+  const body = document.getElementById("ai-modal-text");
+  const tBtn = document.getElementById("ai-tab-text");
+  const dBtn = document.getElementById("ai-tab-diff");
+  tBtn.classList.toggle("active", which === "text");
+  dBtn.classList.toggle("active", which === "diff");
+  if (which === "text") {
+    body.textContent = lastProofreadText;
+  } else {
+    if (lastProofreadDiffHtml === null) {
+      const r = computeDiffHtml(lastProofreadOriginal, lastProofreadText);
+      lastProofreadDiffHtml = r.html;
+      dBtn.textContent = "Đã sửa gì (" + r.groups + " chỗ)";
+    }
+    body.innerHTML = lastProofreadDiffHtml;
+  }
+}
+
+async function proofreadReport() {
+  blurActiveInput();
+  autoSaveDraft();
+  const s = getAiSettings();
+  if (!s.key) {
+    showToast("Chưa có API key — nhập key trong Cài đặt AI");
+    openAiSettingsPanel();
+    return;
+  }
+  const text = buildReportText();
+  lastProofreadOriginal = text;
+  lastProofreadDiffHtml = null;
+  openAiModal("Đang soát chính tả...", false);
+  try {
+    const res = await fetchWithTimeout(s.base + "/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + s.key,
+      },
+      body: JSON.stringify({
+        model: s.model,
+        temperature: 0.2,
+        messages: [
+          {
+            role: "system",
+            content: "Bạn là biên tập viên tiếng Việt cho báo cáo công việc của tổ vận hành nước bệnh viện. Nhiệm vụ: sửa lỗi chính tả, ngữ pháp, dấu câu và chuẩn hóa cách viết trong văn bản dưới đây. Quy tắc: giữ nguyên toàn bộ nội dung, số liệu, tên thiết bị, cấu trúc dòng và thứ tự các mục; không thêm, không bớt, không viết lại ý; không giải thích. Chỉ trả về đúng văn bản đã sửa.",
+          },
+          { role: "user", content: text },
+        ],
+      }),
+    });
+    if (!res.ok) {
+      let msg = "Gọi API lỗi " + res.status + ".";
+      if (res.status === 401) msg = "Key không đúng hoặc đã hết hạn — kiểm tra lại API key.";
+      else if (res.status === 403) msg = "API từ chối truy cập (403) — kiểm tra key hoặc khu vực hỗ trợ.";
+      else if (res.status === 429) msg = "Hết quota hoặc bị giới hạn tốc độ — thử lại sau.";
+      else if (res.status === 404) msg = "Model hoặc Base URL không đúng — kiểm tra lại cài đặt.";
+      else if (res.status === 503) msg = "Máy chủ AI đang quá tải (503) — thử lại sau ít phút.";
+      const detail = await apiErrorDetail(res);
+      openAiModal(msg + (detail ? "\nChi tiết: " + detail : "") + "\n\n(Bản gốc không bị thay đổi.)", false);
+      return;
+    }
+    const data = await res.json();
+    const out = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content || "").trim();
+    if (!out) {
+      openAiModal("AI không trả về nội dung — thử lại.", false);
+      return;
+    }
+    lastProofreadText = out;
+    lastProofreadDiffHtml = null;
+    openAiModal(out, true);
+  } catch (e) {
+    const timeout = e && e.name === "AbortError";
+    openAiModal((timeout ? "Hết thời gian chờ (60s) — mạng chậm hoặc API quá tải, thử lại." : "Không gọi được API — kiểm tra mạng hoặc Base URL.") + "\n\n(Bản gốc không bị thay đổi.)", false);
+  }
+}
+
+async function testAiConnection() {
+  const s = getAiSettings();
+  if (!s.key) {
+    localStorage.removeItem(AI_LS_CONN);
+    updateAiStatus();
+    showToast("Chưa có API key — nhập key trong Cài đặt AI");
+    openAiSettingsPanel();
+    return;
+  }
+  showToast("Đang kiểm tra kết nối...");
+  try {
+    const res = await fetchWithTimeout(s.base + "/models", {
+      headers: { "Authorization": "Bearer " + s.key },
+    });
+    if (res.ok) {
+      localStorage.setItem(AI_LS_CONN, "ok");
+      const data = await res.json();
+      const n = (data.data && data.data.length) || 0;
+      showToast(n ? "Kết nối OK — " + n + " model khả dụng" : "Kết nối OK — key hợp lệ");
+    } else {
+      localStorage.setItem(AI_LS_CONN, "fail");
+      const detail = await apiErrorDetail(res);
+      showToast(res.status === 503 ? "Máy chủ AI đang quá tải (503) — thử lại sau ít phút." : "Kết nối lỗi " + res.status + (detail ? ": " + detail : ""));
+    }
+  } catch (e) {
+    localStorage.setItem(AI_LS_CONN, "fail");
+    const timeout = e && e.name === "AbortError";
+    showToast(timeout ? "Hết thời gian chờ (60s) — mạng chậm hoặc API quá tải." : "Không gọi được API — kiểm tra mạng hoặc Base URL");
+  }
+  updateAiStatus();
+}
+
+/* ---------- Chat AI (chung key/cài đặt với Soát chính tả) ---------- */
+let chatHistory = [];
+let chatBusy = false;
+
+function setChatBusy(busy) {
+  chatBusy = busy;
+  const inp = document.getElementById("chat-input");
+  const btn = document.getElementById("chat-send-btn");
+  if (inp) inp.disabled = busy;
+  if (btn) btn.disabled = busy;
+}
+const CHAT_SYS = "Bạn là trợ lý AI cho tổ vận hành nước của bệnh viện. Trả lời ngắn gọn, thực tế, bằng tiếng Việt.";
+const AI_LS_INSTRUCT = "TO_NUOC_AI_INSTRUCT_V1";
+const CHAT_LS = "TO_NUOC_CHAT_HISTORY_V1";
+const CHAT_MAX = 40;
+
+function buildChatSystemPrompt() {
+  let sys = CHAT_SYS;
+  const ins = (localStorage.getItem(AI_LS_INSTRUCT) || "").trim();
+  if (ins) sys += "\n\nLệnh cố định của người dùng (luôn tuân theo):\n" + ins;
+  const activeIds = loadActivePromptIds();
+  loadPrompts().forEach((pr) => {
+    if (activeIds.includes(pr.id)) sys += "\n\nPrompt đang dùng (" + pr.name + "):\n" + pr.content;
+  });
+  return sys;
+}
+
+/* ---------- Prompt cho Chat AI ---------- */
+const AI_LS_PROMPTS = "TO_NUOC_AI_PROMPTS_V1";
+const AI_LS_PROMPT_ACTIVE = "TO_NUOC_AI_PROMPT_ACTIVE_V1";
+const AI_LS_PROMPTS_ACTIVE = "TO_NUOC_AI_PROMPTS_ACTIVE_V1";
+
+function loadActivePromptIds() {
+  try {
+    const raw = localStorage.getItem(AI_LS_PROMPTS_ACTIVE);
+    if (raw !== null) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) return arr.filter((x) => typeof x === "string");
+    }
+  } catch (_) {}
+  /* Migration từ bản chỉ dùng 1 prompt: key cũ chứa 1 id */
+  const old = localStorage.getItem(AI_LS_PROMPT_ACTIVE);
+  if (old) {
+    const ids = [old];
+    localStorage.setItem(AI_LS_PROMPTS_ACTIVE, JSON.stringify(ids));
+    localStorage.removeItem(AI_LS_PROMPT_ACTIVE);
+    return ids;
+  }
+  return [];
+}
+
+function saveActivePromptIds(ids) {
+  try { localStorage.setItem(AI_LS_PROMPTS_ACTIVE, JSON.stringify(ids)); } catch (_) {}
+}
+const DEFAULT_PROMPT = {
+  id: "default-bao-cao",
+  name: "Trợ lý báo cáo",
+  content: 'Bạn là trợ lý AI cho tổ vận hành nước của bệnh viện. Xưng hô: em xưng "em", gọi người dùng là "anh". Luôn trả lời ngắn gọn, đủ ý.\n\nKhi anh nhập một đoạn báo cáo (một việc, một dòng công việc), em làm theo đúng trình tự sau:\n1. Gợi ý sửa chính tả ngay: đưa ra bản đã sửa lỗi chính tả, ngữ pháp, dấu câu, giữ nguyên nội dung, số liệu và tên riêng.\n2. Hỏi lại anh xác nhận trước khi chốt: chỉ khi anh đồng ý mới coi bản sửa là bản cuối.\n3. Nhận diện nội dung và cho biết đoạn này phù hợp với mục nào của báo cáo:\n   - Mục 1: Công tác kiểm tra – sửa chữa tại khoa phòng\n   - Mục 2: Công tác vận hành – kỹ thuật trạm xử lý nước thải\n   - Mục 3: Sự cố còn tồn tại\n   - Mục 4: Công tác theo dõi hệ thống\n4. Hiện gợi ý: thêm thẳng vào mục đã gợi ý, hoặc để anh chọn mục khác nếu anh muốn.\n5. Khi anh xác nhận, em chỉ trả ra đúng 1 dòng bản cuối, không thêm lời dẫn, để anh bấm nút "Thêm vào báo cáo" dưới câu trả lời rồi chọn mục là xong.\n\nVới câu hỏi khác không phải đoạn báo cáo, em trả lời bình thường, ngắn gọn, đủ ý.',
+};
+
+function loadPrompts() {
+  const raw = localStorage.getItem(AI_LS_PROMPTS);
+  if (raw === null) {
+    const seed = [{ id: DEFAULT_PROMPT.id, name: DEFAULT_PROMPT.name, content: DEFAULT_PROMPT.content }];
+    localStorage.setItem(AI_LS_PROMPTS, JSON.stringify(seed));
+    localStorage.setItem(AI_LS_PROMPTS_ACTIVE, JSON.stringify([DEFAULT_PROMPT.id]));
+    return seed;
+  }
+  try {
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr.filter((x) => x && typeof x.id === "string" && typeof x.content === "string") : [];
+  } catch (_) {
+    return [];
+  }
+}
+
+function savePrompts(list) {
+  try { localStorage.setItem(AI_LS_PROMPTS, JSON.stringify(list)); } catch (_) {}
+}
+
+function renderPrompts() {
+  const box = document.getElementById("prompt-list");
+  if (!box) return;
+  const list = loadPrompts();
+  let activeIds = loadActivePromptIds();
+  /* Dọn id của prompt đã bị xóa khỏi tập đang bật */
+  const pruned = activeIds.filter((id) => list.some((x) => x.id === id));
+  if (pruned.length !== activeIds.length) { activeIds = pruned; saveActivePromptIds(activeIds); }
+  box.innerHTML = list.map((x) => {
+    const isActive = activeIds.includes(x.id);
+    return '<div class="prompt-item">' +
+      '<div class="prompt-item-head"><span class="prompt-item-name">' + escapeHtml(x.name || "Prompt") + "</span>" +
+      '<span class="key-toggle ' + (isActive ? "on" : "off") + '" onclick="togglePrompt(\'' + x.id + '\')" title="' + (isActive ? "Đang dùng" : "Bấm để dùng") + '"><span class="key-toggle-dot"></span></span></div>' +
+      '<div class="prompt-item-content">' + escapeHtml(x.content) + "</div>" +
+      '<div class="prompt-item-actions">' +
+      '<button class="btn-paste" onclick="deletePrompt(\'' + x.id + '\')">Xóa</button>' +
+      "</div></div>";
+  }).join("") || '<p class="ai-note">Chưa có prompt nào.</p>';
+  const rw = document.getElementById("prompt-restore-wrap");
+  if (rw) rw.style.display = list.some((x) => x.id === DEFAULT_PROMPT.id) ? "none" : "";
+}
+
+function togglePrompt(id) {
+  let ids = loadActivePromptIds();
+  if (ids.includes(id)) ids = ids.filter((x) => x !== id);
+  else ids.push(id);
+  saveActivePromptIds(ids);
+  renderPrompts();
+}
+
+function deletePrompt(id) {
+  if (!confirm("Xóa prompt này?")) return;
+  const list = loadPrompts().filter((x) => x.id !== id);
+  savePrompts(list);
+  saveActivePromptIds(loadActivePromptIds().filter((x) => x !== id));
+  renderPrompts();
+  showToast("Đã xóa prompt");
+}
+
+function addPrompt() {
+  const nameEl = document.getElementById("prompt-name");
+  const contentEl = document.getElementById("prompt-content");
+  const name = nameEl ? nameEl.value.trim() : "";
+  const content = contentEl ? contentEl.value.trim() : "";
+  if (!name || !content) {
+    showToast("Nhập đủ tên và nội dung prompt");
+    return;
+  }
+  const list = loadPrompts();
+  list.push({ id: "p" + Date.now(), name: name, content: content });
+  savePrompts(list);
+  if (nameEl) nameEl.value = "";
+  if (contentEl) contentEl.value = "";
+  renderPrompts();
+  showToast("Đã thêm prompt");
+}
+
+function restoreDefaultPrompt() {
+  const list = loadPrompts();
+  if (!list.some((x) => x.id === DEFAULT_PROMPT.id)) {
+    list.push({ id: DEFAULT_PROMPT.id, name: DEFAULT_PROMPT.name, content: DEFAULT_PROMPT.content });
+  }
+  savePrompts(list);
+  renderPrompts();
+  showToast("Đã khôi phục prompt mặc định");
+}
+
+function saveChatHistory() {
+  try {
+    if (chatHistory.length === 0) localStorage.removeItem(CHAT_LS);
+    else localStorage.setItem(CHAT_LS, JSON.stringify(chatHistory.slice(-CHAT_MAX)));
+  } catch (_) {}
+}
+
+function loadChatHistory() {
+  try {
+    const raw = localStorage.getItem(CHAT_LS);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) {
+        chatHistory = arr.filter((m) => m && (m.role === "user" || m.role === "ai") && typeof m.text === "string").slice(-CHAT_MAX);
+      }
+    }
+  } catch (_) {}
+}
+
+function clearChatHistory() {
+  chatHistory = [];
+  try { localStorage.removeItem(CHAT_LS); } catch (_) {}
+  renderChat();
+  showToast("Đã xóa đoạn chat");
+}
+
+function openChat() {
+  const s = getAiSettings();
+  if (!s.key) {
+    showToast("Chưa có API key — nhập key trong Cài đặt AI");
+    openAiSettingsPanel();
+    return;
+  }
+  document.getElementById("chat-modal").style.display = "flex";
+  renderChat();
+  const inp = document.getElementById("chat-input");
+  if (inp) inp.focus();
+}
+
+function closeChat() {
+  document.getElementById("chat-modal").style.display = "none";
+}
+
+function renderChat() {
+  const box = document.getElementById("chat-msgs");
+  if (!box) return;
+  box.innerHTML = chatHistory.map((m, idx) => {
+    if (m.role === "user") {
+      return '<div class="chat-msg user">' + escapeHtml(m.text) + "</div>";
+    }
+    return '<div class="chat-msg ai">' + escapeHtml(m.text) +
+      '<div><button class="chat-add-btn" onclick="toggleChatAddPicker(' + idx + ')">➕ Thêm vào báo cáo</button></div>' +
+      '<div class="chat-add-picker" id="chat-picker-' + idx + '" style="display:none">' +
+      '<button onclick="addChatToReport(' + idx + ', 0)">Mục 1</button>' +
+      '<button onclick="addChatToReport(' + idx + ', 1)">Mục 2</button>' +
+      '<button onclick="addChatToReport(' + idx + ', 2)">Mục 3</button>' +
+      '<button onclick="addChatToReport(' + idx + ', 3)">Mục 4</button>' +
+      '<button onclick="addChatToReport(' + idx + ', 4)">Bể mái</button>' +
+      "</div></div>";
+  }).join("");
+  box.scrollTop = box.scrollHeight;
+  saveChatHistory();
+}
+
+function toggleChatAddPicker(idx) {
+  const el = document.getElementById("chat-picker-" + idx);
+  if (el) el.style.display = el.style.display === "none" ? "flex" : "none";
+}
+
+/* Chỉ lấy dòng sửa đã gợi ý khi thêm từ Chat AI vào báo cáo */
+function extractSuggestion(text) {
+  const t = text.trim();
+  let m = t.match(/Bản gợi ý sửa:\*?\*?\s*["“”]([^"“”]+)["“”]/);
+  if (m) return m[1].replace(/\*\*/g, "").trim();
+  m = t.match(/Bản gợi ý sửa:\*?\*?\s*(.+)/);
+  if (m) return m[1].split("\n")[0].replace(/\*\*/g, "").replace(/^["“”]|["“”]$/g, "").trim();
+  return t.replace(/^-\s*/, "");
+}
+
+function addChatToReport(idx, target) {
+  const msg = chatHistory[idx];
+  if (!msg) return;
+  const val = extractSuggestion(msg.text);
+  if (!val) return;
+  if (target === 4) {
+    state.sec5Extra = state.sec5Extra || [];
+    state.sec5Extra.push(val);
+    renderSec5Extra();
+  } else {
+    if (!state.sections[target]) return;
+    state.sections[target].items.push(val);
+    renderSections();
+  }
+  autoSaveDraft();
+  updatePreview();
+  const pk = document.getElementById("chat-picker-" + idx);
+  if (pk) pk.style.display = "none";
+  showToast(target === 4 ? "Đã thêm vào ghi chú bể mái" : "Đã thêm vào mục " + (target + 1));
+}
+
+async function sendChat() {
+  const input = document.getElementById("chat-input");
+  const text = input ? input.value.trim() : "";
+  if (!text) return;
+  const s = getAiSettings();
+  if (!s.key) {
+    showToast("Chưa có API key — nhập key trong Cài đặt AI");
+    openAiSettingsPanel();
+    return;
+  }
+  if (chatBusy) return;
+  setChatBusy(true);
+  chatHistory.push({ role: "user", text: text });
+  input.value = "";
+  renderChat();
+  const box = document.getElementById("chat-msgs");
+  const thinking = document.createElement("div");
+  thinking.className = "chat-msg ai";
+  thinking.textContent = "Đang trả lời...";
+  box.appendChild(thinking);
+  box.scrollTop = box.scrollHeight;
+  try {
+    const res = await fetchWithTimeout(s.base + "/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + s.key,
+      },
+      body: JSON.stringify({
+        model: s.model,
+        temperature: 0.7,
+        messages: [{ role: "system", content: buildChatSystemPrompt() }]
+          .concat(chatHistory.map((m) => ({ role: m.role === "user" ? "user" : "assistant", content: m.text }))),
+      }),
+    });
+    thinking.remove();
+    if (!res.ok) {
+      let msg = "Gọi API lỗi " + res.status + ".";
+      if (res.status === 401) msg = "Key không đúng hoặc đã hết hạn.";
+      else if (res.status === 403) msg = "API chưa hỗ trợ khu vực của anh.";
+      else if (res.status === 429) msg = "Hết quota hoặc bị giới hạn tốc độ — thử lại sau.";
+      else if (res.status === 404) msg = "Model hoặc Base URL không đúng.";
+      else if (res.status === 503) msg = "Máy chủ AI đang quá tải (503) — thử lại sau ít phút.";
+      const detail = await apiErrorDetail(res);
+      chatHistory.push({ role: "ai", text: msg + (detail ? "\nChi tiết: " + detail : "") });
+      renderChat();
+      setChatBusy(false);
+      return;
+    }
+    const data = await res.json();
+    const out = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content || "").trim();
+    chatHistory.push({ role: "ai", text: out || "AI không trả về nội dung — thử lại." });
+    renderChat();
+    setChatBusy(false);
+  } catch (e) {
+    thinking.remove();
+    const timeout = e && e.name === "AbortError";
+    chatHistory.push({ role: "ai", text: timeout ? "Hết thời gian chờ (60s) — mạng chậm hoặc API quá tải, thử lại sau." : "Không gọi được API — kiểm tra mạng hoặc Base URL." });
+    renderChat();
+    setChatBusy(false);
+  }
+}
+
 async function shareReport() {
   blurActiveInput();
   autoSaveDraft();
@@ -1818,6 +2832,8 @@ document.addEventListener("click", (e) => {
 }, true);
 
 loadState();
+loadChatHistory();
+renderPrompts();
 </script>
 </body>
 </html>

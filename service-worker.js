@@ -1,4 +1,4 @@
-const CACHE_NAME = "to-nuoc-pwa-v1";
+const CACHE_NAME = "to-nuoc-pwa-v2";
 const ASSETS = [
   "./index.html",
   "./manifest.json",
@@ -30,13 +30,17 @@ self.addEventListener("activate", event => {
 });
 
 self.addEventListener("fetch", event => {
+  /* Trang (navigation): ưu tiên mạng để luôn thấy bản mới nhất, mất mạng mới dùng cache.
+     Tài nguyên khác (icon, manifest): dùng cache trước cho nhanh. */
+  if (event.request.mode === "navigate") {
+    event.respondWith(
+      fetch(event.request).catch(() => caches.match("./index.html"))
+    );
+    return;
+  }
   event.respondWith(
     caches.match(event.request).then(response => {
-      return response || fetch(event.request).catch(() => {
-        if (event.request.mode === "navigate") {
-          return caches.match("./index.html");
-        }
-      });
+      return response || fetch(event.request);
     })
   );
 });
