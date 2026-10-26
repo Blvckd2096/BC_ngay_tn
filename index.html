@@ -807,6 +807,7 @@
   }
   .ai-modal-actions {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     padding: 10px 14px;
     border-top: 1px solid var(--border);
@@ -1074,7 +1075,7 @@
   </div>
 
   <!-- Cài đặt AI: key chỉ lưu trên máy này (localStorage), không nằm trong file -->
-  <div class="ver-tag">Cập nhật 23/10 09:09</div>
+  <div class="ver-tag">Cập nhật 26/10 16:53</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
@@ -1181,6 +1182,7 @@
     <div class="ai-modal-body" id="ai-modal-text"></div>
     <div class="ai-modal-actions">
       <button class="btn-add" id="ai-modal-copy" onclick="copyProofreadText()">Copy bản đã sửa</button>
+      <button class="btn-add" id="ai-modal-import" onclick="importProofreadToReport()">Nhập vào báo cáo</button>
       <button class="btn-paste" onclick="closeAiModal()">Đóng</button>
     </div>
   </div>
@@ -2167,6 +2169,8 @@ function saveAiSettings() {
 function openAiModal(text, withCopy) {
   document.getElementById("ai-modal-text").textContent = text;
   document.getElementById("ai-modal-copy").style.display = withCopy ? "" : "none";
+  const importBtn = document.getElementById("ai-modal-import");
+  if (importBtn) importBtn.style.display = withCopy ? "" : "none";
   const tabs = document.getElementById("ai-modal-tabs");
   if (tabs) tabs.style.display = withCopy ? "flex" : "none";
   if (withCopy) {
@@ -2254,6 +2258,53 @@ function showProofreadTab(which) {
     }
     body.innerHTML = lastProofreadDiffHtml;
   }
+}
+
+/* ---------- Nhập bản đã soát vào báo cáo (chỉ mục 1-4, bể mái giữ nguyên) ---------- */
+function parseReportTextToSections(text) {
+  const sections = [null, null, null, null];
+  let cur = -1;
+  text.split("\n").forEach((raw) => {
+    const line = raw.trim();
+    const hm = line.match(/^([1-4])\.\s/);
+    if (hm) { cur = parseInt(hm[1], 10) - 1; sections[cur] = []; return; }
+    if (/^5\.\s/.test(line)) { cur = -1; return; }
+    if (cur < 0) return;
+    const im = line.match(/^[-•*]\s+(.*)$/);
+    if (im) { sections[cur].push(im[1]); return; }
+    if (line !== "" && sections[cur].length > 0) {
+      sections[cur][sections[cur].length - 1] += " " + line;
+    }
+  });
+  return sections;
+}
+
+function importProofreadToReport() {
+  if (!lastProofreadText) return;
+  const parsed = parseReportTextToSections(lastProofreadText);
+  const prev = {};
+  const changed = [];
+  for (let i = 0; i < 4; i++) {
+    if (parsed[i] && parsed[i].length > 0) {
+      prev[i] = state.sections[i].items.slice();
+      state.sections[i].items = parsed[i];
+      changed.push(i + 1);
+    }
+  }
+  if (!changed.length) {
+    showToast("Không nhận diện được cấu trúc báo cáo — bản gốc giữ nguyên");
+    return;
+  }
+  autoSaveDraft();
+  renderSections();
+  updatePreview();
+  closeAiModal();
+  showToastWithAction("Đã nhập bản sửa vào mục " + changed.join(", "), "Hoàn tác", () => {
+    changed.forEach((n) => { state.sections[n - 1].items = prev[n - 1]; });
+    autoSaveDraft();
+    renderSections();
+    updatePreview();
+  });
 }
 
 async function proofreadReport() {
@@ -2832,6 +2883,13 @@ document.addEventListener("click", (e) => {
 }, true);
 
 loadState();
+
+/* Mỗi lần mở app: tự chọn ngày hôm nay (giữ nguyên nội dung báo cáo) */
+const todayVN = todayStr();
+document.getElementById("report-date").value = todayVN;
+syncNativeDatePickerFromVN(todayVN);
+autoSaveDraft();
+
 loadChatHistory();
 renderPrompts();
 </script>
