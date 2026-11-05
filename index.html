@@ -935,6 +935,53 @@
     pointer-events: auto;
     white-space: nowrap;
   }
+
+  /* ===== Tab Bể mái & Ca trực (tích hợp từ file Be-mai-va-Ca-truc-tich-hop.html) ===== */
+  #bemai-tab { display: none; }
+  body.bemai-active #bemai-tab { display: block; }
+  body.bemai-active .container > :not(.top-bar):not(#bemai-tab) { display: none; }
+  body.bemai-active .bottom-dock { display: none; }
+  body.bemai-active { padding-bottom: 24px; }
+  .btn-small.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  #bemai-tab, #bemai-tab *{box-sizing:border-box}
+  #bemai-tab{font-family:Arial,Helvetica,sans-serif;color:#222}
+  #bemai-tab .wrap{max-width:480px;margin:0 auto;padding:6px 10px 12px}
+  #bemai-tab h1{font-size:16px;text-align:center;margin:4px 0}
+  #bemai-tab h2{font-size:16px;text-align:center;margin:10px 0 6px}
+  #bemai-tab .row{background:#fff;border:1px solid #ccc;border-radius:8px;padding:4px 8px;margin:0 0 4px;display:flex;align-items:center;gap:6px}
+  #bemai-tab .row.alt{background:#f7f7f7}
+  #bemai-tab .label{flex:1;min-width:0;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #bemai-tab .val{font-size:16px;font-weight:bold;min-width:58px;text-align:center}
+  #bemai-tab button{font-family:inherit;cursor:pointer;border:1px solid #888;border-radius:8px;background:#fff}
+  #bemai-tab .step{width:38px;height:30px;font-size:20px;font-weight:bold;line-height:1}
+  #bemai-tab .minus{background:#fce8e8}
+  #bemai-tab .plus{background:#e2efda}
+  #bemai-tab .step:disabled{opacity:.35;cursor:default}
+  #bemai-tab #imgBox{margin-top:4px;text-align:center}
+  #bemai-tab #imgBox img{width:100%;max-width:240px;display:block;margin:0 auto;border:1px solid #888;border-radius:6px;background:#fff}
+  #bemai-tab .divider{border:none;border-top:2px solid #ccc;margin:14px 0 4px}
+  #bemai-tab .head{background:#fff;border:1px solid #ccc;border-radius:10px;padding:6px 7px;margin-bottom:7px;display:flex;flex-wrap:nowrap;gap:4px;align-items:center}
+  #bemai-tab .head label{font-size:13px;font-weight:bold;white-space:nowrap}
+  #bemai-tab .head input{font-family:inherit;font-size:13px;border:1px solid #ddd;border-radius:6px;padding:4px 6px;background:#fff}
+  #bemai-tab #nameInput{flex:1;min-width:0;font-weight:bold}
+  #bemai-tab #shiftInput{width:78px;font-weight:bold;text-align:center}
+  #bemai-tab #dateInput{width:88px;text-align:center}
+  #bemai-tab .ritem{background:#fff;border:1px solid #ccc;border-radius:10px;padding:6px 8px;margin:0 0 6px;display:flex;gap:6px;align-items:flex-start}
+  #bemai-tab .ritem.alt{background:#f7f7f7}
+  #bemai-tab .ritem textarea{flex:1;min-width:0;min-height:30px;font-family:inherit;font-size:14px;line-height:1.45;border:none;outline:none;resize:none;background:transparent;padding:4px 2px}
+  #bemai-tab .ritem textarea:focus{outline:1px solid #2f5496;border-radius:4px}
+  #bemai-tab .btns{display:flex;gap:4px;flex-shrink:0;padding-top:2px}
+  #bemai-tab .btns button{font-family:inherit;cursor:pointer;border:1px solid #aaa;border-radius:7px;background:#fff;font-size:11px;padding:5px 6px}
+  #bemai-tab .btns .del{color:#c00;font-weight:bold;font-size:15px;padding:4px 9px}
+  #bemai-tab .addbtn{display:block;width:100%;background:#fff;border:1px dashed #888;color:#222;font-size:14px;font-weight:bold;padding:9px;border-radius:10px;margin:4px 0 8px;cursor:pointer}
+  #bemai-tab .sharebtn{display:block;width:100%;background:#1e7d32;color:#fff;border:none;font-size:16px;font-weight:bold;padding:13px;border-radius:10px;cursor:pointer;margin-top:8px}
+  #bemai-tab .reportBoxLabel{font-size:12px;color:#555;margin:10px 0 4px}
+  #bemai-tab #reportBox{width:100%;min-height:120px;font-family:Arial,Helvetica,sans-serif;font-size:13px;line-height:1.55;background:#fff;border:1px solid #ccc;border-radius:10px;padding:8px 10px;resize:none;overflow:hidden}
+  #bemai-tab .minirow{text-align:center;font-size:12px;margin-top:6px}
+  #bemai-tab .mini{background:none;border:none;color:#2f5496;font-size:12px;text-decoration:underline;padding:0;cursor:pointer}
+  #bemai-tab .minirow a{color:#2f5496}
+  #bemai-tab .bm-toast{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:#222;color:#fff;padding:10px 14px;border-radius:20px;font-size:14px;display:none;z-index:10;max-width:92%;text-align:center}
+  #bemai-tab .bm-toast button{background:#fff;color:#222;border:none;border-radius:12px;padding:5px 12px;margin-left:8px;font-weight:bold;cursor:pointer}
 </style>
 </head>
 <body>
@@ -945,8 +992,31 @@
     <div class="top-actions">
       <button class="btn-small" onclick="loadSampleReport()">Nạp mẫu</button>
       <button class="btn-small" id="theme-btn" onclick="toggleTheme()">Giao diện: Sáng</button>
+      <button class="btn-small" id="tab-toggle-btn" onclick="switchAppTab()">Bể mái &amp; Ca trực</button>
       
     </div>
+  </div>
+  <div id="bemai-tab">
+<div class="wrap">
+  <h1>MỰC NƯỚC CÁC BỂ MÁI</h1>
+  <div id="waterRows"></div>
+  <div id="imgBox"><img id="imgPreview" alt="Ảnh bảng mực nước"></div>
+
+  <hr class="divider">
+  <h2>BÁO CÁO CA TRỰC</h2>
+  <div class="head">
+    <label>Ca trực</label><input id="nameInput" value="Phú - Đăng">
+    <input id="shiftInput" value="Tối ngày:"><input id="dateInput" value="05/11/2026">
+  </div>
+  <div id="reportItems"></div>
+  <button class="addbtn" id="addBtn">+ Thêm việc</button>
+
+  <button class="sharebtn" id="copyReportBtn">📋 Copy báo cáo + Share ảnh</button>
+  <div class="reportBoxLabel">Nội dung báo cáo (chạm vào ô để copy):</div>
+  <textarea id="reportBox" readonly></textarea>
+  <div class="minirow"><a id="dlLink" download="Muc-nuoc-be-mai.png">Tải ảnh bảng</a> · <button class="mini" id="resetWaterBtn">Đặt lại bể mái</button> · <button class="mini" id="resetReportBtn">Đặt lại ca trực</button></div>
+</div>
+  <div class="bm-toast" id="bm-toast"><span id="bm-toastMsg"></span><button id="bm-undoBtn" style="display:none">Hoàn tác</button></div>
   </div>
 
   <!-- Thông tin chung & Bộ chỉnh nhanh Ngày Tháng Năm -->
@@ -1075,7 +1145,7 @@
   </div>
 
   <!-- Cài đặt AI: key chỉ lưu trên máy này (localStorage), không nằm trong file -->
-  <div class="ver-tag">Cập nhật 26/10 16:53</div>
+  <div class="ver-tag">Cập nhật 05/11 12:57</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
@@ -2892,6 +2962,274 @@ autoSaveDraft();
 
 loadChatHistory();
 renderPrompts();
+
+/* ===== Tab Bể mái & Ca trực: chuyển giữa báo cáo ngày và tab bể mái/ca trực ===== */
+let bemaiTabOpen = false;
+function switchAppTab() {
+  bemaiTabOpen = !bemaiTabOpen;
+  document.body.classList.toggle('bemai-active', bemaiTabOpen);
+  const btn = document.getElementById('tab-toggle-btn');
+  btn.textContent = bemaiTabOpen ? '← Báo cáo' : 'Bể mái & Ca trực';
+  btn.classList.toggle('active', bemaiTabOpen);
+  window.scrollTo(0, 0);
+  if (bemaiTabOpen) {
+    /* Vào tab Bể mái & Ca trực: tự chọn ngày hôm nay cho ca trực */
+    const t = todayStr();
+    reportData.date = t;
+    document.getElementById('dateInput').value = t;
+    bmSaveReport();
+    /* Tab vừa hiện mới đo được chiều cao thật: tính lại chiều cao các ô nội dung + ô báo cáo tổng
+       (lúc mở app tab đang ẩn nên scrollHeight ≈ 0, các ô bị xẹp lại) */
+    document.querySelectorAll('#reportItems textarea').forEach(function(ta){ autoHeight(ta); });
+    updateReportBox();
+  }
+}
+
+// ---- Bể mái (giữ đúng key localStorage cũ be_mai_v2) ----
+var WATER_DEFAULTS = [16,19,20,18,21,21];
+var WATER_ITEMS = [
+  {zone:'Zone 1', name:'Nước sạch'},
+  {zone:'Zone 1', name:'Ro'},
+  {zone:'Zone 3', name:'Nước sạch'},
+  {zone:'Zone 3', name:'Ro'},
+  {zone:'T13', name:'A1'},
+  {zone:'T13', name:'A2'}
+];
+var waterValues = WATER_DEFAULTS.slice();
+try {
+  var sw = JSON.parse(localStorage.getItem('be_mai_v2') || 'null');
+  if (Array.isArray(sw) && sw.length === 6 && sw.every(function(v){return Number.isInteger(v) && v >= 0 && v <= 50;})) waterValues = sw;
+} catch(e) {}
+function fmtWater(t){ return Math.floor(t/10) + ',' + (t % 10) + 'm'; }
+function fmtWaterSpace(t){ return Math.floor(t/10) + ',' + (t % 10) + ' m'; }
+function saveWater(){ try { localStorage.setItem('be_mai_v2', JSON.stringify(waterValues)); } catch(e) {} }
+function renderWater(){
+  var wrap = document.getElementById('waterRows');
+  wrap.innerHTML = '';
+  WATER_ITEMS.forEach(function(it, i){
+    var div = document.createElement('div');
+    div.className = 'row' + (i % 2 ? ' alt' : '');
+    div.innerHTML = '<div class="label"><b>' + it.zone + '</b> ' + it.name + '</div>'
+      + '<button class="step minus" data-i="' + i + '" data-d="-1" ' + (waterValues[i] <= 0 ? 'disabled' : '') + '>−</button>'
+      + '<div class="val">' + fmtWater(waterValues[i]) + '</div>'
+      + '<button class="step plus" data-i="' + i + '" data-d="1" ' + (waterValues[i] >= 50 ? 'disabled' : '') + '>+</button>';
+    wrap.appendChild(div);
+  });
+  wrap.querySelectorAll('.step').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var i = parseInt(btn.getAttribute('data-i'), 10);
+      var d = parseInt(btn.getAttribute('data-d'), 10);
+      waterValues[i] = Math.min(50, Math.max(0, waterValues[i] + d));
+      saveWater(); renderWater();
+    });
+  });
+  bmUpdatePreview();
+}
+function drawTable(){
+  var W = 600, H = 516;
+  var cv = document.createElement('canvas');
+  cv.width = W; cv.height = H;
+  var ctx = cv.getContext('2d');
+  ctx.fillStyle = '#ffffff'; ctx.fillRect(0, 0, W, H);
+  function cell(x, y, w, h, fill){
+    ctx.fillStyle = fill; ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = '#505050'; ctx.lineWidth = 1.5; ctx.strokeRect(x + 0.75, y + 0.75, w - 1.5, h - 1.5);
+  }
+  function text(s, x, y, w, h, bold, size){
+    ctx.fillStyle = '#222222';
+    ctx.font = (bold ? 'bold ' : '') + size + 'px Arial, Helvetica, sans-serif';
+    ctx.textBaseline = 'middle';
+    ctx.textAlign = 'center'; ctx.fillText(s, x + w / 2, y + h / 2);
+  }
+  cell(0, 0, W, 77, '#dce6f2');
+  text('MỰC NƯỚC CÁC BỂ MÁI', 0, 0, W, 77, true, 44);
+  var groups = [[0,1],[2,3],[4,5]];
+  groups.forEach(function(g){
+    var y0 = 77 + g[0] * 73;
+    cell(0, y0, 165, 146, '#ffffff');
+    text(WATER_ITEMS[g[0]].zone, 0, y0, 165, 146, true, 40);
+  });
+  WATER_ITEMS.forEach(function(it, i){
+    var y = 77 + i * 73;
+    var fill = (i % 2 === 1) ? '#e6e6e6' : '#ffffff';
+    cell(165, y, 207, 73, fill);
+    cell(372, y, 228, 73, fill);
+    text(it.name, 165, y, 207, 73, false, 40);
+    text(fmtWaterSpace(waterValues[i]), 372, y, 228, 73, false, 40);
+  });
+  return cv;
+}
+var bmPreviewSeq = 0, bmPreviewUrl = null;
+function bmUpdatePreview(){
+  var seq = ++bmPreviewSeq;
+  drawTable().toBlob(function(blob){
+    if (!blob || seq !== bmPreviewSeq) return;
+    if (bmPreviewUrl) URL.revokeObjectURL(bmPreviewUrl);
+    bmPreviewUrl = URL.createObjectURL(blob);
+    document.getElementById('imgPreview').src = bmPreviewUrl;
+    document.getElementById('dlLink').href = bmPreviewUrl;
+  }, 'image/png');
+}
+
+// ---- Ca trực (giữ đúng key localStorage cũ ca_truc_20261105) ----
+var REPORT_DEFAULTS = {
+  name: 'Phú - Đăng',
+  shift: 'Tối ngày:',
+  date: '05/11/2026',
+  items: [
+    'Trực vận hành hệ thống kĩ thuật',
+    'Bật - tắt thiết bị điện theo kế hoạch',
+    'Theo dõi mực nước bể 2 giai đoạn',
+    'Kiểm tra đèn chiếu sáng các cầu thang bộ lúc 19:00',
+    'Kiểm tra, bổ sung hóa chất, vận hành trạm XLNT',
+    'Xử lý mất điện bình nóng lạnh WC nữ khoa TKTT'
+  ]
+};
+var reportData = JSON.parse(JSON.stringify(REPORT_DEFAULTS));
+try {
+  var sr = JSON.parse(localStorage.getItem('ca_truc_20261105') || 'null');
+  if (sr && Array.isArray(sr.items)) {
+    reportData = sr;
+    if (!reportData.shift) reportData.shift = 'Tối ngày:';
+  }
+} catch(e) {}
+function bmSaveReport(){ try { localStorage.setItem('ca_truc_20261105', JSON.stringify(reportData)); } catch(e) {} }
+function reportText(){
+  var shift = (reportData.shift || '').trim();
+  var line2 = ((shift ? shift + ' ' : '') + (reportData.date || '').trim()).trim();
+  var lines = ['Ca trực ' + (reportData.name || '').trim(), line2];
+  reportData.items.forEach(function(t){ if (t && t.trim()) lines.push('- ' + t.trim()); });
+  return lines.join('\n');
+}
+function updateReportBox(){
+  var box = document.getElementById('reportBox');
+  if (!box) return;
+  box.value = reportText();
+  box.style.height = 'auto';
+  box.style.height = box.scrollHeight + 'px';
+}
+function copyReportText(){
+  var text = reportText();
+  var box = document.getElementById('reportBox');
+  function fallbackSelect(){
+    if (!box) return;
+    box.focus();
+    box.select();
+    try { box.setSelectionRange(0, box.value.length); } catch(e) {}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) { ok = false; }
+    if (ok) bmShowToast('Đã copy nội dung báo cáo', false);
+    else bmShowToast('Đã chọn hết, bấm Sao chép trên menu', false);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(function(){
+      bmShowToast('Đã copy nội dung báo cáo', false);
+    }).catch(fallbackSelect);
+  } else {
+    fallbackSelect();
+  }
+}
+var bmToastTimer = null, bmDeleted = null;
+function bmShowToast(msg, showUndo){
+  var t = document.getElementById('bm-toast');
+  document.getElementById('bm-toastMsg').textContent = msg;
+  document.getElementById('bm-undoBtn').style.display = showUndo ? 'inline-block' : 'none';
+  t.style.display = 'block';
+  clearTimeout(bmToastTimer);
+  bmToastTimer = setTimeout(function(){ t.style.display = 'none'; bmDeleted = null; }, 4000);
+}
+function autoHeight(ta){ ta.style.height = 'auto'; ta.style.height = ta.scrollHeight + 'px'; }
+function renderReport(){
+  document.getElementById('nameInput').value = reportData.name;
+  document.getElementById('shiftInput').value = reportData.shift;
+  document.getElementById('dateInput').value = reportData.date;
+  updateReportBox();
+  var wrap = document.getElementById('reportItems');
+  wrap.innerHTML = '';
+  reportData.items.forEach(function(text, i){
+    var div = document.createElement('div');
+    div.className = 'ritem' + (i % 2 ? ' alt' : '');
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.rows = 1;
+    ta.addEventListener('input', function(){ reportData.items[i] = ta.value; bmSaveReport(); autoHeight(ta); updateReportBox(); });
+    var btns = document.createElement('div');
+    btns.className = 'btns';
+    var clearBtn = document.createElement('button');
+    clearBtn.textContent = 'Xóa ND';
+    clearBtn.addEventListener('click', function(){
+      reportData.items[i] = ''; bmSaveReport(); renderReport();
+      var newTa = wrap.querySelectorAll('textarea')[i];
+      if (newTa) newTa.focus();
+    });
+    var delBtn = document.createElement('button');
+    delBtn.className = 'del'; delBtn.textContent = '×';
+    delBtn.addEventListener('click', function(){
+      bmDeleted = {index: i, text: reportData.items[i]};
+      reportData.items.splice(i, 1); bmSaveReport(); renderReport();
+      bmShowToast('Đã xóa dòng', true);
+    });
+    btns.appendChild(clearBtn); btns.appendChild(delBtn);
+    div.appendChild(ta); div.appendChild(btns);
+    wrap.appendChild(div);
+    autoHeight(ta);
+  });
+}
+document.getElementById('nameInput').addEventListener('input', function(e){ reportData.name = e.target.value; bmSaveReport(); updateReportBox(); });
+document.getElementById('shiftInput').addEventListener('input', function(e){ reportData.shift = e.target.value; bmSaveReport(); updateReportBox(); });
+document.getElementById('dateInput').addEventListener('input', function(e){ reportData.date = e.target.value; bmSaveReport(); updateReportBox(); });
+document.getElementById('copyReportBtn').addEventListener('click', function(){
+  copyReportText();
+  shareReportAndImage();
+});
+document.getElementById('reportBox').addEventListener('click', function(){ this.select(); });
+document.getElementById('addBtn').addEventListener('click', function(){
+  reportData.items.push(''); bmSaveReport(); renderReport();
+  var tas = document.querySelectorAll('#reportItems textarea');
+  if (tas.length) tas[tas.length - 1].focus();
+});
+document.getElementById('bm-undoBtn').addEventListener('click', function(){
+  if (!bmDeleted) return;
+  reportData.items.splice(bmDeleted.index, 0, bmDeleted.text);
+  bmDeleted = null; bmSaveReport(); renderReport();
+  document.getElementById('bm-toast').style.display = 'none';
+});
+document.getElementById('resetWaterBtn').addEventListener('click', function(){
+  waterValues = WATER_DEFAULTS.slice(); saveWater(); renderWater();
+});
+document.getElementById('resetReportBtn').addEventListener('click', function(){
+  reportData = JSON.parse(JSON.stringify(REPORT_DEFAULTS)); bmSaveReport(); renderReport();
+});
+
+// ---- Nút Copy báo cáo tích hợp Share: copy chữ trước, rồi share cả ảnh + chữ ----
+function shareReportAndImage(){
+  var text = reportText();
+  drawTable().toBlob(function(blob){
+    if (!blob){ bmToastSimple('Đã copy báo cáo, chạm giữ ảnh để gửi Zalo'); return; }
+    var file = new File([blob], 'Muc-nuoc-be-mai.png', {type: 'image/png'});
+    var both = {files: [file], text: text, title: 'Ca trực ' + reportData.name};
+    function isAbort(err){ return err && err.name === 'AbortError'; }
+    if (navigator.share && navigator.canShare && navigator.canShare(both)) {
+      navigator.share(both).then(function(){
+        bmShowToast('Đã copy báo cáo, đã mở bảng chia sẻ — chọn Zalo', false);
+      }).catch(function(err){
+        if (isAbort(err)) return;
+        bmToastSimple('Đã copy báo cáo, dán thêm vào Zalo');
+      });
+    } else if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) {
+      navigator.share({files: [file], title: 'Mực nước các bể mái'}).then(function(){
+        bmShowToast('Đã copy báo cáo, đã mở bảng chia sẻ — chọn Zalo', false);
+      }).catch(function(err){
+        if (isAbort(err)) return;
+        bmToastSimple('Đã copy báo cáo, chạm giữ ảnh để gửi Zalo');
+      });
+    } else {
+      bmToastSimple('Đã copy báo cáo, chạm giữ ảnh để gửi Zalo');
+    }
+  }, 'image/png');
+}
+function bmToastSimple(msg){ bmShowToast(msg, false); }
+renderWater();
+renderReport();
 </script>
 </body>
 </html>
