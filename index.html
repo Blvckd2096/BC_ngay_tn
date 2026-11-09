@@ -989,6 +989,7 @@
   .split-line-text { flex: 1; min-width: 0; font-size: 14px; line-height: 1.45; word-break: break-word; }
   .split-line-copy { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
   .split-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 18px 0; }
+  #split-import-btn:disabled { opacity: .45; }
 </style>
 </head>
 <body>
@@ -1152,7 +1153,7 @@
   </div>
 
   <!-- Cài đặt AI: key chỉ lưu trên máy này (localStorage), không nằm trong file -->
-  <div class="ver-tag">Cập nhật 06/11 17:53</div>
+  <div class="ver-tag">Cập nhật 09/11 16:50</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
@@ -1234,6 +1235,7 @@
       </div>
       <textarea id="split-input" placeholder="Dán đoạn báo cáo vào đây…" autocomplete="off" oninput="onSplitInput()"></textarea>
       <div id="split-lines" style="margin-top:10px;"></div>
+      <button class="btn-add" id="split-import-btn" style="width:100%; padding:12px; margin-top:4px;" onclick="importSplitToSection2()">Nhập tất cả vào mục 2</button>
     </div>
   </div>
 </div>
@@ -1558,6 +1560,31 @@ function undoSplitDelete() {
   showToast("Đã hoàn tác — dòng đã trở lại");
 }
 
+function importSplitToSection2() {
+  if (!splitLines.length) {
+    showToast("Chưa có dòng nào để nhập");
+    return;
+  }
+  const sec = state.sections[1];
+  if (!sec) return;
+  const count = splitLines.length;
+  /* Chèn từ dòng 4 trở đi: 3 dòng đầu giữ nguyên, các dòng cũ từ vị trí 4 đẩy xuống dưới */
+  const insertAt = Math.min(3, sec.items.length);
+  sec.items.splice(insertAt, 0, ...splitLines);
+  /* Dòng trong mục Tách báo cáo bị xóa (đã nhập xong) */
+  splitLines = [];
+  syncSplitInputFromLines();
+  renderSplitLines();
+  autoSaveDraft();
+  renderSections();
+  closeSplitPanel();
+  showToast("Đã nhập " + count + " dòng vào mục 2 (từ dòng 4)");
+  /* Cuộn tới mục 2 để thấy các dòng vừa nhập */
+  const titleEl = document.getElementById("title-disp-1");
+  const card = titleEl ? titleEl.closest(".card") : null;
+  if (card) card.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function stripSplitMarker(line) {
   /* Bỏ dấu gạch đầu dòng / số thứ tự ở đầu dòng: -, •, *, –, —, +, ·, ›, » hoặc "1. ", "1) " */
   return line.replace(/^[-•*–—+·›»]\s*/, "").replace(/^\d+[.)]\s+/, "").trim();
@@ -1586,6 +1613,8 @@ function splitReportText(text) {
 function renderSplitLines() {
   const box = document.getElementById("split-lines");
   if (!box) return;
+  const importBtn = document.getElementById("split-import-btn");
+  if (importBtn) importBtn.disabled = !splitLines.length;
   if (!splitLines.length) {
     box.innerHTML = '<div class="split-empty">Chưa có dòng nào — dán đoạn báo cáo vào ô trên.</div>';
     return;
