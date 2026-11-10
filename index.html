@@ -675,18 +675,19 @@
     max-width: 680px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    gap: 6px;
   }
 
   .btn-dock {
     border-radius: 10px;
-    padding: 13px 8px;
-    font-size: 13px;
+    padding: 13px 4px;
+    font-size: 12px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
     border: 1px solid var(--border);
+    white-space: nowrap;
   }
 
   .btn-dock:active {
@@ -705,11 +706,17 @@
     box-shadow: 0 3px 10px rgba(37, 99, 235, 0.35);
   }
 
-  .btn-copy-all {
+  .btn-proofread {
+    background: #7c3aed;
+    color: #fff;
+    border-color: #7c3aed;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.35);
+  }
+
+  .btn-split {
     background: var(--success);
     color: #fff;
     border-color: var(--success);
-    font-size: 14px;
     box-shadow: 0 3px 10px rgba(5, 150, 105, 0.35);
   }
 
@@ -990,6 +997,9 @@
   .split-line-copy { flex-shrink: 0; background: var(--surface); border: 1px solid var(--border); color: var(--text); border-radius: 20px; padding: 5px 12px; font-size: 12px; font-weight: 700; cursor: pointer; }
   .split-empty { font-size: 13px; color: var(--text-muted); text-align: center; padding: 18px 0; }
   #split-import-btn:disabled { opacity: .45; }
+  .saved-pager { display: flex; align-items: center; justify-content: center; gap: 10px; padding: 10px 0 2px; }
+  .saved-pager .saved-page-label { font-size: 13px; color: var(--text-muted); min-width: 64px; text-align: center; }
+  .saved-pager .btn-small:disabled { opacity: .45; }
 </style>
 </head>
 <body>
@@ -1136,9 +1146,15 @@
   <div class="card">
     <div class="sec-header">
       <span class="sec-title-text">Báo cáo đã lưu (<span id="saved-count">0</span>)</span>
-      <button class="btn-small" onclick="downloadCurrentReportTxt()">Tải file .TXT</button>
+      <div class="sec-header-btns">
+        <button class="btn-small" onclick="downloadCurrentReportTxt()">Tải file .TXT</button>
+        <button class="btn-small" id="saved-collapse-btn" onclick="toggleSavedCollapsed()">▾</button>
+      </div>
     </div>
-    <div id="saved-reports-container" class="saved-list"></div>
+    <div id="saved-body">
+      <div id="saved-reports-container" class="saved-list"></div>
+      <div id="saved-pager" class="saved-pager" style="display:none;"></div>
+    </div>
   </div>
 
   <!-- Xem trước toàn bộ nội dung văn bản -->
@@ -1153,13 +1169,11 @@
   </div>
 
   <!-- Cài đặt AI: key chỉ lưu trên máy này (localStorage), không nằm trong file -->
-  <div class="ver-tag">Cập nhật 09/11 16:50</div>
+  <div class="ver-tag">Cập nhật 10/11 16:44</div>
 </div>
 
 <!-- Nút avatar ghim nổi góc trên-phải màn hình -->
 <div class="avatar-menu" id="avatar-menu" style="display:none">
-  <button class="avatar-menu-item" onclick="avatarMenuAction('proofread')">Soát chính tả</button>
-  <button class="avatar-menu-item" onclick="avatarMenuAction('split')">Tách dòng báo cáo</button>
   <button class="avatar-menu-item" onclick="avatarMenuAction('chat')">Chat AI</button>
   <button class="avatar-menu-item" onclick="avatarMenuAction('prompts')">Prompt</button>
   <button class="avatar-menu-item" onclick="avatarMenuAction('test')">Kiểm tra kết nối</button>
@@ -1172,7 +1186,8 @@
   <div class="dock-inner">
     <button class="btn-dock btn-share" onclick="shareReport()">Chia sẻ</button>
     <button class="btn-dock btn-save-report" onclick="saveReportExplicit()">Lưu báo cáo</button>
-    <button class="btn-dock btn-copy-all" onclick="copyFullReport()">Copy Toàn Bộ</button>
+    <button class="btn-dock btn-proofread" onclick="proofreadReport()">Soát chính tả</button>
+    <button class="btn-dock btn-split" onclick="openSplitPanel()">Tách báo cáo</button>
   </div>
 </div>
 
@@ -1379,6 +1394,11 @@ let state = {
 };
 
 let savedHistory = [];
+const SAVED_PAGE_SIZE = 10;
+const SAVED_COLLAPSED_KEY = "TO_NUOC_SAVED_COLLAPSED_V1";
+let savedPage = 1;
+let savedCollapsed = false;
+try { savedCollapsed = localStorage.getItem(SAVED_COLLAPSED_KEY) === "1"; } catch (_) {}
 let editingPresetMode = {};
 
 /* Hàm tăng giảm 0.1 cho các ô mực nước (hỗ trợ dấu phẩy hoặc chấm thập phân) */
@@ -1842,6 +1862,7 @@ function saveReportExplicit() {
     savedHistory[existingIdx] = record;
   } else {
     savedHistory.unshift(record);
+    savedPage = 1; /* Bản mới lên đầu trang 1 để thấy ngay */
   }
 
   localStorage.setItem(SAVED_HISTORY_KEY, JSON.stringify(savedHistory));
@@ -1851,14 +1872,26 @@ function saveReportExplicit() {
 
 function renderSavedHistory() {
   const container = document.getElementById("saved-reports-container");
+  const pager = document.getElementById("saved-pager");
   document.getElementById("saved-count").textContent = savedHistory.length;
+  applySavedCollapsed();
 
   if (savedHistory.length === 0) {
     container.innerHTML = `<div style="font-size:12px;color:var(--text-muted);text-align:center;padding:10px;">Chưa có bản lưu nào. Bấm nút "Lưu báo cáo" ở phía dưới để lưu lại theo ngày.</div>`;
+    if (pager) pager.style.display = "none";
     return;
   }
 
-  container.innerHTML = savedHistory.map((item, idx) => `
+  /* Tách trang: 10 mục/trang, chỉ vẽ trang hiện tại (idx là vị trí thật trong savedHistory) */
+  const totalPages = Math.max(1, Math.ceil(savedHistory.length / SAVED_PAGE_SIZE));
+  if (savedPage > totalPages) savedPage = totalPages;
+  if (savedPage < 1) savedPage = 1;
+  const start = (savedPage - 1) * SAVED_PAGE_SIZE;
+  const pageItems = savedHistory.slice(start, start + SAVED_PAGE_SIZE);
+
+  container.innerHTML = pageItems.map((item, i) => {
+    const idx = start + i;
+    return `
     <div class="saved-item">
       <div class="saved-info">
         <span class="saved-date">Ngày: ${escapeHtml(item.date)}</span>
@@ -1870,7 +1903,39 @@ function renderSavedHistory() {
         <button class="btn-small" style="color:var(--danger)" onclick="deleteSavedReport(${idx})">Xóa</button>
       </div>
     </div>
-  `).join("");
+  `;
+  }).join("");
+
+  if (pager) {
+    if (totalPages > 1) {
+      pager.style.display = "flex";
+      pager.innerHTML = `
+        <button class="btn-small" onclick="changeSavedPage(-1)" ${savedPage <= 1 ? "disabled" : ""}>‹ Trước</button>
+        <span class="saved-page-label">Trang ${savedPage}/${totalPages}</span>
+        <button class="btn-small" onclick="changeSavedPage(1)" ${savedPage >= totalPages ? "disabled" : ""}>Sau ›</button>`;
+    } else {
+      pager.style.display = "none";
+    }
+  }
+}
+
+function changeSavedPage(delta) {
+  const totalPages = Math.max(1, Math.ceil(savedHistory.length / SAVED_PAGE_SIZE));
+  savedPage = Math.min(totalPages, Math.max(1, savedPage + delta));
+  renderSavedHistory();
+}
+
+function toggleSavedCollapsed() {
+  savedCollapsed = !savedCollapsed;
+  try { localStorage.setItem(SAVED_COLLAPSED_KEY, savedCollapsed ? "1" : "0"); } catch (_) {}
+  applySavedCollapsed();
+}
+
+function applySavedCollapsed() {
+  const body = document.getElementById("saved-body");
+  const btn = document.getElementById("saved-collapse-btn");
+  if (body) body.style.display = savedCollapsed ? "none" : "";
+  if (btn) btn.textContent = savedCollapsed ? "▸" : "▾";
 }
 
 function loadSavedReport(idx) {
